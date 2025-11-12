@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: inv_db
+    ports:
+      - 5432:5432
+    volumes:
+      - $HOME/dev/var/inv_mgnt_tui/data
+    environment:
+      POSTGRES_DB: test_inv_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
