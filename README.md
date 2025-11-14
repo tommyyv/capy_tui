@@ -21,6 +21,8 @@ require extensive support.
 - Textual
 - Docker
 
+<img src="./docs/2025nov12_inv_mgnt_design.png" alt="Design & architecture"></img>
+
 ## Install Guide
 
 ## User Guide
