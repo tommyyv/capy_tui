@@ -1,4 +1,8 @@
 .env
 env
 
+.venv
+venv
 src/test.py
+
+__pycache__
