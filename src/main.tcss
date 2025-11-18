@@ -1,0 +1,58 @@
+/* HEADER & FOOTER */
+Header {
+    dock: top;
+}
+
+Footer {
+    dock: bottom;
+}
+
+/* SIDEBAR */
+#sidebar {
+    dock: left;
+    width: 30;
+    height: 100%;
+    background: green;
+    padding: 1 0;
+}
+
+.sidebar_btn {
+    margin: 1 0;
+}
+
+/* MAIN CONTENT AREA */
+#content {
+  width: auto;
+  background: orange;
+  padding: 1 2;
+}
+
+/* BUTTONS */
+Button {
+    width: 100%;
+    padding: 1;
+    border: round red;
+}
+
+Button:hover {
+    background: yellow !important;
+    color: green;
+}
+
+/* TITLE */
+.title {
+    padding: 1;
+    background: $panel;
+    color: white;
+}
+
+
+
+#input_btn {
+  width: 50%;
+}
+
+#inv_table {
+  background: purple;
+  width: 100%;
+}
