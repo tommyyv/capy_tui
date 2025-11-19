@@ -26,7 +26,7 @@ require extensive support.
 ## Install Guide
 
 Prerequisite:  
-*NOTE:*This project assumes you're using a Linux or Darwin system.
+_NOTE:_ This project assumes you're using a Linux or Darwin system.
 
 - Python installed and/or version; verify using:  
   `which python` or `python --version`
