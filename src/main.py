@@ -4,9 +4,10 @@ from typing import List, Tuple, Optional
 
 # framework
 from textual.app import App, ComposeResult, Widget
-from textual import on
+from textual.screens import Screen
 from textual.containers import Horizontal, Vertical, Container
 from textual.widgets import (
+    Placeholder,
     Header,
     Footer,
     Static,
@@ -15,6 +16,7 @@ from textual.widgets import (
     Input,
     Label,
 )
+from textual import on
 
 # user-defined
 data = [
@@ -33,6 +35,7 @@ initial_entry: DateTime
 last_updated: DateTime
 '''
 # TODO: refactor using @dataclass (__init__, __repr__, __eq__ auto-gen)
+# TODO: add input validation => most of these inputs will be strings...
 
 #################
 # CLASS OBJECTS #
@@ -40,7 +43,8 @@ last_updated: DateTime
 
 
 class Database():
-    # TODO: refactor public to non-public methods
+    # TODO: refactor public to non-public methods for create_table and run_query => users shouldn't be interacting with
+    # these methods
     # NOTE: CRUD functions work, need to revise a few but overall, it works.
     def __init__(self):
         self.db_conn = sqlite3.connect("test.db")
@@ -163,15 +167,59 @@ class BarcodeInputWidget(Vertical):
             self.db.add_inv_item(barcode)
             db.refresh_table()
 
+# QuitScreen widget...REF: https://textual.textualize.io/guide/screens/#__tabbed_3_3
 
+
+class QuitScreen(Placeholder):
+    def compose(self) -> ComposeResult:
+        pass
 ########
 # MAIN #
 ########
+# TODO: move main class and dunder into __main__.py
+
+
+# NOTE: work outside in
+# DESIGN: screen(container) -> container layout(horiz, vert, etc)-> components(widgets) -> behavior/functionality
+# DESIGN: think about functionality/behavior of that screen and work out, what needs to be on the screen to make the
+# functionality work
+'''
+class SomeScreen(Screen):
+    compose (layout):
+        this is how i want the structure to look
+
+    mount (render):
+        render me these components
+
+    on/action (functionality/behavior);
+        if this event happens -> do this
+        change to new screen -> push_screen
+        go back -> pop_screen (remove top most, or active screen, from the stack)
+        change screens -> switch_screen
+'''
+
+
 class CapyTUI(App):
     CSS_PATH = "main.tcss"
     BINDINGS = []
     db: Database
     # TODO: add database path global and pass into the class constructor
+    # DATABASE_PATH = "./db/test.db"
+    # TODO: add database path global and pass into the class constructor
+    # TODO: add SCREENS = {dict to Screens()}
+    # TODO: add actions to switch screens
+    # TODO: add bindings to switch screens, etc
+    # TODO: separate files and import them in (screens/, components/)
+
+    # TODO(base): add BaseScreen(Screen)
+    # TODO(feat-inv): add InvMgntScreen(BaseScreen)
+    # TODO(feat-inv): add path to SCREENS
+    # TODO(feat-inv): add to BINDINGS
+    # TODO(feat-inv): add action_switch_screen
+    # TODO(feat-inv): add Database() to InvMgnt
+    # TODO(feat-inv): add CRUD buttons
+    # TODO(feat-inv): add refresh table feat = real-time
+    # TODO(feat-inv): add navigation buttons
 
     def __init__(self):
         super().__init__()
@@ -184,7 +232,9 @@ class CapyTUI(App):
         yield Footer()
 
     def on_mount(self) -> None:
-        self.title = "CAPY TUI - INV MGNT"
+        self.title = "CAPY TUI"
+        self.sub_title = "INV MGNT"
+        # TODO: add home page using push_screen(HomeScreen())
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         content = self.query_one("#content", Container)
@@ -203,6 +253,13 @@ class CapyTUI(App):
             content.mount(Static("Excess Dashboard", classes="title"))
         elif event.button.id == "btn-report":
             content.mount(Static("Report Dashboard", classes="title"))
+
+    # TODO: add quit dialog
+    def action_quit_dialog(self):
+        # TODO: add QuitScreen widget
+        # self.push_screen(QuitScreen())
+        # self.push_screen(QuestionDialog("Are you sure you want to quit...?"))
+        pass
 
 
 if __name__ == "__main__":
