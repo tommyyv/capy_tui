@@ -2,7 +2,7 @@
 
 # framework
 from textual.app import ComposeResult
-from textual.containers import Horizontal
+from textual.containers import Horizontal, Vertical
 from textual.widgets import (
     Input,
     Button,
@@ -23,8 +23,10 @@ class BarcodeInputWidget(Horizontal):
         self.refresh_callback = refresh_callback
 
     def compose(self) -> ComposeResult:
-        yield Input(placeholder="Enter item")
-        yield Button("Submit")
+        yield Vertical(
+            Input(placeholder="Enter item"),
+            Button("Submit")
+        )
 
     @on(Input.Submitted)
     @on(Button.Pressed)
@@ -32,7 +34,8 @@ class BarcodeInputWidget(Horizontal):
         input: str = self.query_one(Input)
         barcode: str = input.value
 
-        self.mount(Label(barcode))
+        # TODO: input validation
+        # TODO(bug): guard clause for existing
 
         if barcode:
             self.db.add_inv_item(barcode)
