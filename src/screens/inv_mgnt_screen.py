@@ -2,8 +2,6 @@
 from typing import List, Tuple
 
 # framework
-from textual.app import ComposeResult
-from textual.containers import Vertical
 from textual.widgets import DataTable
 
 # user-defined
@@ -19,12 +17,6 @@ class InvMgntScreen(BaseScreen):
     def __init__(self, db: Database) -> None:
         super().__init__()
         self.db = db
-
-    # def compose(self) -> ComposeResult:
-    #     yield Vertical(
-    #         DataTable(),
-    #         BarcodeInputWidget(self.db)
-    #     )
 
     def on_mount(self) -> None:
         content = self.query_one("#content")
