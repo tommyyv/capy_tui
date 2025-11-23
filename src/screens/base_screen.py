@@ -22,7 +22,7 @@ class BaseScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Horizontal(
-            NavSidebar(id="nav_sidebar"),
+            NavSidebar(bd="nav_sidebar"),
             Container(id="content")
         )
         yield Footer()
