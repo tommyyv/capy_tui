@@ -4,15 +4,15 @@ from typing import List, Tuple
 # framework
 from textual.app import ComposeResult
 from textual.containers import Vertical
+from textual.screen import Screen
 from textual.widgets import DataTable
 
 # user-defined
 from services.db import Database
-from screens.base_screen import BaseScreen
-from components.barcode_input_widget import BarcodeInputWidget
+from widgets.barcode_input_widget import BarcodeInputWidget
 
 
-class InvMgntScreen(BaseScreen):
+class InvMgntScreen(Screen):
     db: Database
     table: DataTable
 
