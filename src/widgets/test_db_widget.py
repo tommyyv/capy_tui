@@ -37,6 +37,7 @@ class TestDatabaseWidget(Widget):
             yield Label("TEST LABEL 1: ")
             yield Input(id="barcode", placeholder="enter item...")
             yield Button("ADD", id="add")
+            yield Button("DELETE ID", id="delete_id")
 
     def on_mount(self) -> None:
         self.table = self.query_one("#inv_table", DataTable)
@@ -59,11 +60,21 @@ class TestDatabaseWidget(Widget):
         input: str = self.query_one(Input)
         barcode: str = input.value
 
-        # TODO: input validation
+        # TODO: add input validation
         # TODO(bug): guard clause for existing
 
         if barcode:
             self.db.add_inv_item(barcode)
+            input.value = ""
+            self.refresh_table_callback()
+    
+    @on(Button.Pressed, "#delete_id")
+    def on_cancel_button_event(self) -> None:
+        input: str = self.query_one(Input)
+        id: str = input.value
+
+        if id:
+            self.db.delete_item(id)
             input.value = ""
             self.refresh_table_callback()
 
