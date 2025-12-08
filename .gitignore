@@ -6,3 +6,6 @@ venv
 src/test.py
 
 __pycache__
+
+DEVELOPER.md
+TODO.md
