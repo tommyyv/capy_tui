@@ -3,7 +3,6 @@
 # framework
 from textual.app import App
 
-from screens.home_screen import HomeScreen
 from screens.test_screen import TestScreen
 
 # user-defined
@@ -33,7 +32,6 @@ class CapyTUI(App):
     # CSS_PATH = "styles/main.tcss"
     BINDINGS = []
     SCREENS = {
-        "home": HomeScreen,
         "test": TestScreen
     }
     INITIAL_SCREEN = "home"
