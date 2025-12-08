@@ -10,6 +10,7 @@ from typing import List, Tuple
 
 DATABASE_PATH = pathlib.Path().home() / "test.db"
 
+
 class Database():
     # TODO: refactor public to non-public methods for create_table and run_query => users shouldn't be interacting with
     # these methods
