@@ -53,8 +53,8 @@ class TestDatabaseWidget(Widget):
         for row in rows:
             self.table.add_row(str(row[0]), row[1])
 
-    @on(Input.Submitted)
-    @on(Button.Pressed)
+    @on(Input.Submitted, "#add")
+    @on(Button.Pressed, "#add")
     def on_input_submitted(self) -> None:
         input: str = self.query_one(Input)
         barcode: str = input.value
