@@ -1,22 +1,25 @@
 # standard
 import sqlite3
-from typing import List, Tuple, Optional
+import pathlib
+from typing import List, Tuple
 
 # framework
 
 # user-defined
 
 
+DATABASE_PATH = pathlib.Path().home() / "test.db"
+
 class Database():
     # TODO: refactor public to non-public methods for create_table and run_query => users shouldn't be interacting with
     # these methods
     # NOTE: CRUD functions work, need to revise a few but overall, it works.
-    def __init__(self):
-        self.db_conn = sqlite3.connect("test.db")
+    def __init__(self, db_path=DATABASE_PATH):
+        self.db_conn = sqlite3.connect(db_path)
         self.conn_cursor = self.db_conn.cursor()
-        self.create_inv_table()
+        self._create_inv_table()
 
-    def create_inv_table(self) -> None:
+    def _create_inv_table(self) -> None:
         # TODO: add model field -> model TEXT NOT NULL
         query = """
             CREATE TABLE IF NOT EXISTS test_db (

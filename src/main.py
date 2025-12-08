@@ -1,17 +1,12 @@
 # standard
 
 # framework
-from textual.app import App, ComposeResult
-from textual.widgets import (
-    Footer,
-    Header,
-)
+from textual.app import App
 
 from screens.home_screen import HomeScreen
 from screens.test_screen import TestScreen
 
 # user-defined
-from services.db import Database
 
 '''data model
 id: PK
@@ -42,16 +37,13 @@ class CapyTUI(App):
         "test": TestScreen
     }
     INITIAL_SCREEN = "home"
-    db: Database
 
     def __init__(self):
         super().__init__()
-        self.db = Database()
 
-    def compose(self) -> ComposeResult:
-        # yield Shell()
-        yield Header()
-        yield Footer()
+    # def compose(self) -> ComposeResult:
+    #     yield Header()
+    #     yield Footer()
 
     def on_mount(self) -> None:
         self.theme = "gruvbox"

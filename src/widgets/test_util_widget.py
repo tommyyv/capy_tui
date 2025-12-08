@@ -35,6 +35,6 @@ class TestUtilBoxWidget(Widget):
                     yield Label("TEST LABEL 3: ")
                     yield Input(placeholder="input...")
             with Horizontal(id="bottom-pane"):
-                yield Button("1")
+                yield Button("ADD", id="add")
                 yield Button("2")
                 yield Button("3")

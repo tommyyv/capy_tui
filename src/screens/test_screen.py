@@ -9,6 +9,8 @@ from textual.widgets import Static, Header, Footer
 # user-defined
 from widgets.test_nav_widget import TestNavBoxWidget
 from widgets.test_util_widget import TestUtilBoxWidget
+from widgets.test_db_widget import TestDatabaseWidget
+from services.db import Database
 
 
 class TestScreen(Screen):
@@ -45,18 +47,20 @@ class TestScreen(Screen):
     """
 
     def compose(self) -> ComposeResult:
-        # TODO: design main layout
+        # TODO: remove extra stuff
+        # TODO: add header contents
+        # TODO: add footer contents
+
         yield Header()
         with Container(id="screen-grid"):
             with Container(id="left-pane"):
-                # TODO: import TestDatabaseWidget
-                yield Static("DATABASE")
+                yield Static("DATABASE (del)")
+                yield TestDatabaseWidget(db=Database())
             with Vertical(id="right-pane"):
                 with Container(id="top-right-pane"):
-                    yield Static("UTIL BOX")
+                    yield Static("UTIL BOX (del)")
                     yield TestUtilBoxWidget()
                 with Container(id="bottom-right-pane"):
-                    yield Static("NAVBOX")
+                    yield Static("NAVBOX (del)")
                     yield TestNavBoxWidget()
-
         yield Footer()
