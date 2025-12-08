@@ -50,14 +50,10 @@ class Database():
         self.conn.commit()
 
     def delete_item(self, doe: str) -> None:
-        query = "DELETE FROM test_db WHERE doe = ?;", doe
-
-        self.run_query(query)
+        self.run_query("DELETE FROM test_db WHERE doe = ?;", doe)
 
     def clear_db(self):
-        query = "DELETE FROM test_db;"
-
-        self.run_query(query)
+        self.run_query("DELETE FROM test_db;")
 
     def run_query(self, query, *query_args):
         result = self.conn_cursor.execute(query, query_args)
