@@ -23,24 +23,20 @@ class TestScreen(Screen):
         }
 
         #left-pane {
-            background: blue;
             column-span: 2;
         }
         #right-pane {
             layout: grid;
             grid-size: 1 3;
             grid-rows: 1fr;
-            background: black;
         }
 
         #top-right-pane {
-            background: gray;
             height: 75%;
             row-span: 2;
         }
 
         #bottom-right-pane {
-            background: purple;
             height: 100%;
         }
 
@@ -51,7 +47,7 @@ class TestScreen(Screen):
         # TODO: add header contents
         # TODO: add footer contents
 
-        yield Header()
+        yield Header(show_clock=True)
         with Container(id="screen-grid"):
             with Container(id="left-pane"):
                 yield Static("DATABASE (del)")

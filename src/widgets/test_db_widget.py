@@ -12,19 +12,13 @@ from textual.widgets import DataTable, Input, Button, Label
 # user-defined
 
 
-# pseudo code
-# create a database object => pass a Database object into this widget from the main screen
-# the widget composition is a datatable of the database
-# upon mounting this widget, i want the latest instance of the datatable
-# every time a change happens or an event, refresh the datatable of the database
-
 class TestDatabaseWidget(Widget):
-    DEFAULT_CSS = """
-        #db-container {
-            background: green;
-        }
-
-    """
+    # DEFAULT_CSS = """
+    #     #db-container {
+    #         background: green;
+    #     }
+    #
+    # """
 
     def __init__(self, db):
         super().__init__()
@@ -38,6 +32,7 @@ class TestDatabaseWidget(Widget):
             yield Input(id="barcode", placeholder="enter item...")
             yield Button("ADD", id="add")
             yield Button("DELETE ID", id="delete_id")
+            yield Button("CLEAR DATABASE", id="clear")
 
     def on_mount(self) -> None:
         self.table = self.query_one("#inv_table", DataTable)
@@ -67,7 +62,7 @@ class TestDatabaseWidget(Widget):
             self.db.add_inv_item(barcode)
             input.value = ""
             self.refresh_table_callback()
-    
+
     @on(Button.Pressed, "#delete_id")
     def on_cancel_button_event(self) -> None:
         input: str = self.query_one(Input)
@@ -77,6 +72,11 @@ class TestDatabaseWidget(Widget):
             self.db.delete_item(id)
             input.value = ""
             self.refresh_table_callback()
+
+    @on(Button.Pressed, "#clear")
+    def on_clear_button_event(self) -> None:
+        self.db.clear_db()
+        self.refresh_table_callback()
 
     async def on_db_refresh(self) -> None:
         pass
