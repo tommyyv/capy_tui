@@ -103,7 +103,8 @@ class DatabaseWidget(Widget):
             print("rows from search function", rows)
             self.refresh_table_callback(rows)
 
-    def export_csv(self) -> None:
+    @on(Button.Pressed, "#export")
+    def on_export_csv(self) -> None:
         pass
 
 
