@@ -34,6 +34,7 @@ class DatabaseWidget(Widget):
             yield Button("DELETE ID", id="delete_id")
             yield Button("CLEAR DATABASE", id="clear")
             yield Button("SEARCH ITEM", id="search")
+            yield Button("EXPORT", id="export")
 
     def on_mount(self) -> None:
         self.table = self.query_one("#inv_table", DataTable)
@@ -105,7 +106,8 @@ class DatabaseWidget(Widget):
 
     @on(Button.Pressed, "#export")
     def on_export_csv(self) -> None:
-        pass
+        print("[TEST] export to csv [TEST]")
+        self.db.export_to_csv()
 
 
     async def on_db_refresh(self) -> None:

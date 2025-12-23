@@ -1,6 +1,7 @@
 # standard
 import sqlite3
 import pathlib
+# import csv
 from typing import List, Tuple
 
 # framework
@@ -59,14 +60,32 @@ class Database():
 
     def export_to_csv(self):
         '''
-        1. connect to db, if havent already
-        2. grab headers
-        3. fetch rows
-        4. write to csv
-        5. save csv file
-        6. close connection
+        1. connect to db, if havent already (done)
+        2. grab headers (eh)
+        3. fetch rows (eh)
+        4. write to csv (eh)
+        5. save csv file with current timestamp (not done)
+        6. close connection (eh)
         '''
-        pass
+        # conn already done
+
+        # header rows
+        # NOTE: didn't work...it gave me the first data row
+        header_row = self.fetch_all_items()[0]
+        print(header_row)
+
+        # data rows
+        fetched_rows = self.fetch_all_items()
+
+        # csv_file should be a directory path => how would i make the csv create a new file everytime with the correct
+        # timestamp?
+        # with open() as csv_file:
+        #     writer = csv.writer(csv_file)
+        #     writer.writerow(header_row)
+        #     writer.writerow(fetched_rows)
+
+            # with keyword closes automatically
+
 
     def backup_db(src_path: str, dst_path: str):
         pass
