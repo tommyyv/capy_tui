@@ -34,9 +34,10 @@ class Database():
     def add_inv_item(self, barcode: str) -> None:
         self.run_query("INSERT INTO test_db (doe) VALUES (?);", barcode)
 
-    def fetch_item_by_id(self, doe: str) -> None:
-        print(f"getting item by {doe}: ", self.conn_cursor.execute(
-            "SELECT * FROM test_db WHERE doe = ?", (doe,)).fetchone())
+    # TOOD(bug): logic error potentially here for the search box
+    def fetch_item_by_id(self, doe: str) -> List[Tuple[int, str]]:
+        print(f"fetching item by doe: {doe}")
+        return self.run_query("SELECT * from test_db WHERE doe = ?;", doe).fetchall()
 
     # [(int, str)] => [(id, doe), (id, doe),...]
     def fetch_all_items(self) -> List[Tuple[int, str]]:

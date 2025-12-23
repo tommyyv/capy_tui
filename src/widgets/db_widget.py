@@ -12,7 +12,7 @@ from textual.widgets import DataTable, Input, Button, Label
 # user-defined
 
 
-class TestDatabaseWidget(Widget):
+class DatabaseWidget(Widget):
     # DEFAULT_CSS = """
     #     #db-container {
     #         background: green;
@@ -33,21 +33,26 @@ class TestDatabaseWidget(Widget):
             yield Button("ADD", id="add")
             yield Button("DELETE ID", id="delete_id")
             yield Button("CLEAR DATABASE", id="clear")
+            yield Button("SEARCH ITEM", id="search")
 
     def on_mount(self) -> None:
         self.table = self.query_one("#inv_table", DataTable)
-        self.refresh_table_callback()
+        self.refresh_all_items()
 
-    def refresh_table_callback(self) -> None:
+    def refresh_table_callback(self, rows: List[Tuple[int, str]]) -> None:
         self.table.clear(columns=True)
 
-        rows: List[Tuple[int, str]] = self.db.fetch_all_items()
+        # rows: List[Tuple[int, str]] = self.db.fetch_all_items()
 
         self.table.add_column("ID")
         self.table.add_column("DOE")
 
         for row in rows:
             self.table.add_row(str(row[0]), row[1])
+
+    def refresh_all_items(self) -> None:
+        rows = self.db.fetch_all_items()
+        self.refresh_table_callback(rows)
 
     @on(Input.Submitted, "#add")
     @on(Button.Pressed, "#add")
@@ -76,7 +81,31 @@ class TestDatabaseWidget(Widget):
     @on(Button.Pressed, "#clear")
     def on_clear_button_event(self) -> None:
         self.db.clear_db()
-        self.refresh_table_callback()
+        self.refresh_all_items()
+
+    @on(Button.Pressed, "#search")
+    def on_search_button_pressed(self) -> None:
+        input: str = self.query_one(Input)
+        item_id: str = input.value
+
+        print("item id before validation: ", item_id)
+
+        if item_id:
+            print("item id within validation: ", item_id)
+            print("executing db operation command...")
+            # TODO(bug): fix fetched data => this is where the bug is and it returns None
+            rows = self.db.fetch_item_by_id(item_id)
+            print("this is what rows is fetched by item id: ", rows)
+
+            # TODO(bug): fix how the database returns the results. they aren't exact matches even if the search box is.
+        # the search query displays the same wrong result even if the input is wrong (not an entry)
+        
+            print("rows from search function", rows)
+            self.refresh_table_callback(rows)
+
+    def export_csv(self) -> None:
+        pass
+
 
     async def on_db_refresh(self) -> None:
         pass

@@ -4,7 +4,7 @@ from textual.widget import Widget
 from textual.widgets import Input, Label, Button
 
 
-class TestUtilBoxWidget(Widget):
+class UtilBoxWidget(Widget):
     DEFAULT_CSS = """
         #utilbox-container {
             layout: grid;

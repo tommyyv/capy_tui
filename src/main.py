@@ -3,7 +3,7 @@
 # framework
 from textual.app import App
 
-from screens.test_screen import TestScreen
+from screens.home_screen import HomeScreen
 
 # user-defined
 
@@ -32,7 +32,7 @@ class CapyTUI(App):
     # CSS_PATH = "styles/main.tcss"
     BINDINGS = []
     SCREENS = {
-        "test": TestScreen
+        "home": HomeScreen
     }
     INITIAL_SCREEN = "home"
 
@@ -45,7 +45,7 @@ class CapyTUI(App):
 
     def on_mount(self) -> None:
         self.theme = "gruvbox"
-        self.push_screen("test")
+        self.push_screen("home")
 
 
 if __name__ == "__main__":

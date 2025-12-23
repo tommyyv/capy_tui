@@ -9,7 +9,7 @@ from textual.widgets import Button
 # user-defined
 
 
-class TestNavBoxWidget(Widget):
+class NavBoxWidget(Widget):
     DEFAULT_CSS = """
         #nav-btn-container {
             layout: grid;
