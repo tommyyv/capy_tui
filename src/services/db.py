@@ -57,6 +57,20 @@ class Database():
     def clear_db(self):
         self.run_query("DELETE FROM test_db;")
 
+    def export_to_csv(self):
+        '''
+        1. connect to db, if havent already
+        2. grab headers
+        3. fetch rows
+        4. write to csv
+        5. save csv file
+        6. close connection
+        '''
+        pass
+
+    def backup_db(src_path: str, dst_path: str):
+        pass
+
     def run_query(self, query, *query_args):
         result = self.conn_cursor.execute(query, query_args)
         self.db_conn.commit()
