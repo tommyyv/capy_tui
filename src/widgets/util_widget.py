@@ -36,5 +36,6 @@ class UtilBoxWidget(Widget):
                     yield Input(placeholder="input...")
             with Horizontal(id="bottom-pane"):
                 yield Button("ADD", id="add")
-                yield Button("2")
-                yield Button("3")
+                yield Button("DELETE BY ID", id="delete_id")
+                yield Button("EXPORT", id="export")
+                yield Button("CLEAR DATABASE", id="clear")

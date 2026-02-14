@@ -50,7 +50,6 @@ class HomeScreen(Screen):
         yield Header(show_clock=True)
         with Container(id="screen-grid"):
             with Container(id="left-pane"):
-                yield Static("DATABASE (del)")
                 yield DatabaseWidget(db=Database())
             with Vertical(id="right-pane"):
                 with Container(id="top-right-pane"):

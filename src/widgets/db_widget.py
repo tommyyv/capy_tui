@@ -28,8 +28,8 @@ class DatabaseWidget(Widget):
         with Container(id="db-container"):
             table = DataTable(id="inv_table")
             yield table
-            yield Label("TEST LABEL 1: ")
             yield Input(id="barcode", placeholder="enter item...")
+            yield Input(id="mac", placeholder="enter mac address")
             yield Button("ADD", id="add")
             yield Button("DELETE ID", id="delete_id")
             yield Button("CLEAR DATABASE", id="clear")
@@ -40,16 +40,17 @@ class DatabaseWidget(Widget):
         self.table = self.query_one("#inv_table", DataTable)
         self.refresh_all_items()
 
-    def refresh_table_callback(self, rows: List[Tuple[int, str]]) -> None:
+    def refresh_table_callback(self, rows: List[Tuple[int, str, str]]) -> None:
         self.table.clear(columns=True)
 
         # rows: List[Tuple[int, str]] = self.db.fetch_all_items()
 
         self.table.add_column("ID")
         self.table.add_column("DOE")
+        self.table.add_column("MAC_ADDRESS")
 
         for row in rows:
-            self.table.add_row(str(row[0]), row[1])
+            self.table.add_row(str(row[0]), row[1], row[2])
 
     def refresh_all_items(self) -> None:
         rows = self.db.fetch_all_items()
@@ -59,15 +60,17 @@ class DatabaseWidget(Widget):
     @on(Button.Pressed, "#add")
     def on_input_submitted(self) -> None:
         input: str = self.query_one(Input)
-        barcode: str = input.value
+        mac_input: str = self.query_one("#mac", Input)
+        barcode: str = input.value[5:]
+        mac_address: str = mac_input.value
 
         # TODO: add input validation
         # TODO(bug): guard clause for existing
 
-        if barcode:
-            self.db.add_inv_item(barcode)
+        if barcode and mac_address:
+            self.db.add_inv_item(barcode, mac_address)
             input.value = ""
-            self.refresh_table_callback()
+            self.refresh_all_items()
 
     @on(Button.Pressed, "#delete_id")
     def on_cancel_button_event(self) -> None:
@@ -77,7 +80,7 @@ class DatabaseWidget(Widget):
         if id:
             self.db.delete_item(id)
             input.value = ""
-            self.refresh_table_callback()
+            self.refresh_all_items()
 
     @on(Button.Pressed, "#clear")
     def on_clear_button_event(self) -> None:
@@ -99,8 +102,8 @@ class DatabaseWidget(Widget):
             print("this is what rows is fetched by item id: ", rows)
 
             # TODO(bug): fix how the database returns the results. they aren't exact matches even if the search box is.
-        # the search query displays the same wrong result even if the input is wrong (not an entry)
-        
+            # the search query displays the same wrong result even if the input is wrong (not an entry)
+
             print("rows from search function", rows)
             self.refresh_table_callback(rows)
 
@@ -108,7 +111,6 @@ class DatabaseWidget(Widget):
     def on_export_csv(self) -> None:
         print("[TEST] export to csv [TEST]")
         self.db.export_to_csv()
-
 
     async def on_db_refresh(self) -> None:
         pass
