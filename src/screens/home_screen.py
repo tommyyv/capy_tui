@@ -9,7 +9,9 @@ from textual.widgets import Static, Header, Footer
 # user-defined
 from widgets.nav_widget import NavBoxWidget
 from widgets.util_widget import UtilBoxWidget
-from widgets.db_widget import DatabaseWidget
+
+# from widgets.db_widget import DatabaseWidget
+from widgets.db_widget_test import DatabaseWidget
 from services.db import Database
 
 
@@ -50,11 +52,12 @@ class HomeScreen(Screen):
         yield Header(show_clock=True)
         with Container(id="screen-grid"):
             with Container(id="left-pane"):
+                # yield DatabaseWidget(db=Database())
                 yield DatabaseWidget(db=Database())
             with Vertical(id="right-pane"):
                 with Container(id="top-right-pane"):
                     yield Static("UTIL BOX (del)")
-                    yield UtilBoxWidget()
+                    # yield UtilBoxWidget()
                 with Container(id="bottom-right-pane"):
                     yield Static("NAVBOX (del)")
                     yield NavBoxWidget()

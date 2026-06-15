@@ -5,6 +5,8 @@ env
 venv
 src/test.py
 
+src/data/
+
 __pycache__
 
 DEVELOPER.md

@@ -10,31 +10,35 @@ from textual.widgets import DataTable, Input, Button, Label
 
 
 # user-defined
+from widgets.util_widget import UtilBoxWidget
 
 
 class DatabaseWidget(Widget):
-    # DEFAULT_CSS = """
-    #     #db-container {
-    #         background: green;
-    #     }
-    #
-    # """
+    DEFAULT_CSS = """
+        #grid {
+            layout: grid;
+            grid-size: 2;
+            grid-columns: 2fr 1fr;
+            height: 100%;
+        }
+
+    """
 
     def __init__(self, db):
         super().__init__()
         self.db = db
 
     def compose(self) -> ComposeResult:
-        with Container(id="db-container"):
+        with Container(id="grid"):
             table = DataTable(id="inv_table")
             yield table
-            yield Input(id="barcode", placeholder="enter item...")
-            yield Input(id="mac", placeholder="enter mac address")
-            yield Button("ADD", id="add")
-            yield Button("DELETE ID", id="delete_id")
-            yield Button("CLEAR DATABASE", id="clear")
-            yield Button("SEARCH ITEM", id="search")
-            yield Button("EXPORT", id="export")
+            # yield Input(id="barcode", placeholder="enter item...")
+            # yield Input(id="mac", placeholder="enter mac address")
+            # yield Button("ADD", id="add")
+            # yield Button("DELETE ID", id="delete_id")
+            # yield Button("CLEAR DATABASE", id="clear")
+            # yield Button("SEARCH ITEM", id="search")
+            # yield Button("EXPORT", id="export")
 
     def on_mount(self) -> None:
         self.table = self.query_one("#inv_table", DataTable)
@@ -56,6 +60,7 @@ class DatabaseWidget(Widget):
         rows = self.db.fetch_all_items()
         self.refresh_table_callback(rows)
 
+    ###############################
     @on(Input.Submitted, "#add")
     @on(Button.Pressed, "#add")
     def on_input_submitted(self) -> None:
@@ -113,4 +118,30 @@ class DatabaseWidget(Widget):
         self.db.export_to_csv()
 
     async def on_db_refresh(self) -> None:
+        pass
+
+    # TODO: add event handler for db operations
+    @on(UtilBoxWidget.AddItem)
+    def handle_add_item(self, message: UtilBoxWidget.AddItem) -> None:
+        self.db.add_inv_item(message.barcode, message.mac)
+        self.refresh_all_items()
+
+    @on(UtilBoxWidget.DeleteItem)
+    def handle_delete_item(self, message: UtilBoxWidget.DeleteItem):
+        pass
+
+    @on(UtilBoxWidget.SearchItem)
+    def handle_search_item(self, message: UtilBoxWidget.SearchItem):
+        pass
+
+    @on(UtilBoxWidget.ClearDatabase)
+    def handle_clear_database(self, message: UtilBoxWidget.ClearDatabase):
+        pass
+
+    @on(UtilBoxWidget.ImportData)
+    def handle_import_data(self, message: UtilBoxWidget.ImportData):
+        pass
+
+    @on(UtilBoxWidget.ExportData)
+    def handle_export_data(self, message: UtilBoxWidget.ExportData):
         pass
