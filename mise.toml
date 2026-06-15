@@ -1,0 +1,7 @@
+# mise.toml
+
+[env]
+# Creates .venv locally using the globally active Python version
+_.python.venv = { path = ".venv", create = true }
+
+# [tools] section is omitted for Python -> Inherits global version
