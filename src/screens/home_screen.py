@@ -53,11 +53,11 @@ class HomeScreen(Screen):
             with Container(id="left-pane"):
                 # yield DatabaseWidget(db=Database())
                 yield DatabaseWidget(db=Database())
-            with Vertical(id="right-pane"):
-                with Container(id="top-right-pane"):
-                    yield Static("UTIL BOX (del)")
+            # with Vertical(id="right-pane"):
+            #     with Container(id="top-right-pane"):
+            #         yield Static("UTIL BOX (del)")
                     # yield UtilBoxWidget()
-                with Container(id="bottom-right-pane"):
-                    yield Static("NAVBOX (del)")
-                    yield NavBoxWidget()
+                # with Container(id="bottom-right-pane"):
+                #     yield Static("NAVBOX (del)")
+                #     yield NavBoxWidget()
         yield Footer()
