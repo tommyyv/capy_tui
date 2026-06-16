@@ -20,7 +20,6 @@ last_updated: DateTime
 
 # MAIN #
 ########
-
 # DESIGN: screen(container) -> container layout(horiz, vert, etc)-> components(widgets) -> behavior/functionality
 # DESIGN: think about functionality/behavior of that screen and work out, what needs to be on the screen to make the
 # functionality work
