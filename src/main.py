@@ -40,6 +40,7 @@ class CapyTUI(App):
         super().__init__()
 
     # def compose(self) -> ComposeResult:
+    # TODO: add composition for screens, components, etc
     #     yield Header()
     #     yield Footer()
 
