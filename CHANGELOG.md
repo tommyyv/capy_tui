@@ -46,7 +46,5 @@ Template:
 ### Fixed
 
 - fix(inv): (#1, )
-
 ### Removed
-
 ### Security
