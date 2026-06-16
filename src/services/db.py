@@ -9,7 +9,7 @@ from typing import List, Tuple
 # user-defined
 
 
-DATABASE_PATH = pathlib.Path().home() / "test.db"
+DATABASE_PATH = pathlib.Path().home() / "dev/infra/db/capy_tui/in_memory.db"
 
 
 class Database:
