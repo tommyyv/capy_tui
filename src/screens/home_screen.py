@@ -45,7 +45,6 @@ class HomeScreen(Screen):
     """
 
     def compose(self) -> ComposeResult:
-        # TODO: remove extra stuff
         # TODO: add header contents
         # TODO: add footer contents
 
