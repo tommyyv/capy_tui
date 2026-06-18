@@ -15,7 +15,7 @@ from widgets.db_widget_test import DatabaseWidget
 from services.db import Database
 
 
-class HomeScreen(Screen):
+class Home(Screen):
     DEFAULT_CSS = """
         #screen-grid {
             layout: grid;
