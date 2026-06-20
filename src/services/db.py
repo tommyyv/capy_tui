@@ -33,6 +33,16 @@ class Database:
 
         self.run_query(query)
 
+    def get_table_columns(self, table_name):
+        """Dynamically fetch column names for ANY table."""
+        cursor = self.conn_cursor.execute(f"PRAGMA table_info('{table_name}')")
+        return [col[1] for col in cursor.fetchall()]
+
+    def get_table_data(self, table_name):
+        """Dynamically fetch all data for ANY table."""
+        cursor = self.conn_cursor.execute(f"SELECT * FROM {table_name}")
+        return cursor.fetchall()
+
     def add_inv_item(self, barcode: str, mac_address: str) -> None:
         self.run_query(
             "INSERT INTO test_db (doe, mac_address) VALUES (?, ?);",
@@ -95,8 +105,8 @@ class Database:
         # csv_file should be a directory path => how would i make the csv create a new file everytime with the correct
         # timestamp?
 
-    def backup_db(src_path: str, dst_path: str):
-        pass
+    # def backup_db(src_path: str, dst_path: str):
+    #     pass
 
     def run_query(self, query, *query_args):
         result = self.conn_cursor.execute(query, query_args)
