@@ -1,63 +1,62 @@
 # standard
-
 # framework
-from textual.app import ComposeResult
+
+from textual import on
+from textual.app import App, ComposeResult
+from textual.containers import Center
 from textual.screen import Screen
-from textual.containers import Container, Vertical
-from textual.widgets import Static, Header, Footer
+from textual.widgets import Button, Header
 
 # user-defined
-from widgets.nav_widget import NavBoxWidget
-from widgets.util_widget import UtilBoxWidget
-
-# from widgets.db_widget import DatabaseWidget
-from widgets.db_widget_test import DatabaseWidget
-from services.db import Database
+import one
+import two
 
 
 class Home(Screen):
     DEFAULT_CSS = """
-        #screen-grid {
-            layout: grid;
-            grid-size: 3;
-            grid-columns: 1fr;
-            grid-gutter: 1;
+        Screen {
+            align: center middle;
         }
 
-        #left-pane {
-            column-span: 2;
+        Button{
+            width: 50;
+            height: 5;
+            margin: 2;
+            padding: 1;
         }
-        #right-pane {
-            layout: grid;
-            grid-size: 1 3;
-            grid-rows: 1fr;
-        }
-
-        #top-right-pane {
-            height: 75%;
-            row-span: 2;
-        }
-
-        #bottom-right-pane {
-            height: 100%;
-        }
-
     """
 
     def compose(self) -> ComposeResult:
-        # TODO: add header contents
-        # TODO: add footer contents
+        with Center():
+            yield Header(show_clock=True)
+            yield Button("SCAN", id="scan", classes="with-border")
+            yield Button("EXCESS", id="excess", classes="with-border")
+            yield Button("REPORTS", id="reports", classes="with-border")
+            yield Button("DOCS", id="docs", classes="with-border")
 
-        yield Header(show_clock=True)
-        with Container(id="screen-grid"):
-            with Container(id="left-pane"):
-                # yield DatabaseWidget(db=Database())
-                yield DatabaseWidget(db=Database())
-            # with Vertical(id="right-pane"):
-            #     with Container(id="top-right-pane"):
-            #         yield Static("UTIL BOX (del)")
-                    # yield UtilBoxWidget()
-                # with Container(id="bottom-right-pane"):
-                #     yield Static("NAVBOX (del)")
-                #     yield NavBoxWidget()
-        yield Footer()
+    @on(Button.Pressed, "#scan")
+    def on_scan_button_pressed(self) -> None:
+        self.app.switch_screen(one.One())
+
+    @on(Button.Pressed, "#excess")
+    def on_excess_button_pressed(self) -> None:
+        self.app.switch_screen(two.Two())
+
+
+class Layout(App):
+    CSS = """
+    .with-border {
+        border: heavy green;
+    }
+    """
+
+    TITLE = "CapyTUI"
+
+    def on_mount(self) -> None:
+        self.theme = "gruvbox"
+        self.push_screen(Home())
+
+
+if __name__ == "__main__":
+    app = Layout()
+    app.run()
