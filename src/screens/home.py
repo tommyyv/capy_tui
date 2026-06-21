@@ -2,14 +2,21 @@
 # framework
 
 from textual import on
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
 from textual.containers import Center
 from textual.screen import Screen
 from textual.widgets import Button, Header
 
 # user-defined
-import one
-import two
+from screens.scan import Scan
+
+# from screens.excess import Excess
+# from screens.reports import Reports
+from services.db import Database
+
+one_table = "scan_table"
+two_table = "excess_table"
+three_table = "test_db"
 
 
 class Home(Screen):
@@ -26,6 +33,10 @@ class Home(Screen):
         }
     """
 
+    def __init__(self, db: Database) -> None:
+        super().__init__()
+        self.db = db
+
     def compose(self) -> ComposeResult:
         with Center():
             yield Header(show_clock=True)
@@ -36,27 +47,12 @@ class Home(Screen):
 
     @on(Button.Pressed, "#scan")
     def on_scan_button_pressed(self) -> None:
-        self.app.switch_screen(one.One())
+        self.app.switch_screen(Scan(self.db))
 
-    @on(Button.Pressed, "#excess")
-    def on_excess_button_pressed(self) -> None:
-        self.app.switch_screen(two.Two())
-
-
-class Layout(App):
-    CSS = """
-    .with-border {
-        border: heavy green;
-    }
-    """
-
-    TITLE = "CapyTUI"
-
-    def on_mount(self) -> None:
-        self.theme = "gruvbox"
-        self.push_screen(Home())
-
-
-if __name__ == "__main__":
-    app = Layout()
-    app.run()
+    # @on(Button.Pressed, "#excess")
+    # def on_excess_button_pressed(self) -> None:
+    #     self.app.switch_screen(Excess())
+    #
+    # @on(Button.Pressed, "#reports")
+    # def on_reports_button_pressed(self) -> None:
+    #     self.app.switch_screen(Reports())
