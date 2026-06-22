@@ -1,25 +1,22 @@
-# standard
 from typing import List, Tuple
-
-# framework
-from textual import on
-from textual.app import ComposeResult
-from textual.containers import Container
 from textual.widget import Widget
-from textual.widgets import DataTable, Input, Button, Label
+from textual.app import ComposeResult
+from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual import on
 
+from textual.widgets import (
+    DataTable,
+    Input,
+    Button,
+)
 
-# user-defined
-from widgets.util_widget import UtilBoxWidget
+# import screens.home
 
 
 class DatabaseWidget(Widget):
     DEFAULT_CSS = """
-        #grid {
-            layout: grid;
-            grid-size: 2;
-            grid-columns: 2fr 1fr;
-            height: 100%;
+        #db-container {
+            background: gray;
         }
 
     """
@@ -29,16 +26,20 @@ class DatabaseWidget(Widget):
         self.db = db
 
     def compose(self) -> ComposeResult:
-        with Container(id="grid"):
+        with Horizontal(id="db-container"):
             table = DataTable(id="inv_table")
-            yield table
-            # yield Input(id="barcode", placeholder="enter item...")
-            # yield Input(id="mac", placeholder="enter mac address")
-            # yield Button("ADD", id="add")
-            # yield Button("DELETE ID", id="delete_id")
-            # yield Button("CLEAR DATABASE", id="clear")
-            # yield Button("SEARCH ITEM", id="search")
-            # yield Button("EXPORT", id="export")
+            with VerticalScroll(id="dataview", classes="with-border"):
+                yield table
+            with Vertical(id="utility-controls", classes="with-border"):
+                yield Input(id="barcode", placeholder="enter item...")
+                yield Input(id="mac", placeholder="enter mac address")
+                yield Button("ADD", id="add")
+                yield Button("DELETE ID", id="delete_id")
+                yield Button("CLEAR DATABASE", id="clear")
+                yield Button("SEARCH ITEM", id="search")
+                yield Button("EXPORT", id="export")
+                yield Button("REFRESH", id="refresh")
+                yield Button("GO BACK", id="go_back")
 
     def on_mount(self) -> None:
         self.table = self.query_one("#inv_table", DataTable)
@@ -46,8 +47,6 @@ class DatabaseWidget(Widget):
 
     def refresh_table_callback(self, rows: List[Tuple[int, str, str]]) -> None:
         self.table.clear(columns=True)
-
-        # rows: List[Tuple[int, str]] = self.db.fetch_all_items()
 
         self.table.add_column("ID")
         self.table.add_column("DOE")
@@ -60,31 +59,27 @@ class DatabaseWidget(Widget):
         rows = self.db.fetch_all_items()
         self.refresh_table_callback(rows)
 
-    ###############################
     @on(Input.Submitted, "#add")
     @on(Button.Pressed, "#add")
     def on_input_submitted(self) -> None:
-        input: str = self.query_one(Input)
-        mac_input: str = self.query_one("#mac", Input)
-        barcode: str = input.value[5:]
+        input_widget: Input = self.query_one(Input)
+        mac_input: Input = self.query_one("#mac", Input)
+        barcode: str = input_widget.value[5:]
         mac_address: str = mac_input.value
-
-        # TODO: add input validation
-        # TODO(bug): guard clause for existing
 
         if barcode and mac_address:
             self.db.add_inv_item(barcode, mac_address)
-            input.value = ""
+            input_widget.value = ""
             self.refresh_all_items()
 
     @on(Button.Pressed, "#delete_id")
     def on_cancel_button_event(self) -> None:
-        input: str = self.query_one(Input)
-        id: str = input.value
+        input_widget: Input = self.query_one(Input)
+        id: str = input_widget.value
 
         if id:
             self.db.delete_item(id)
-            input.value = ""
+            input_widget.value = ""
             self.refresh_all_items()
 
     @on(Button.Pressed, "#clear")
@@ -94,22 +89,11 @@ class DatabaseWidget(Widget):
 
     @on(Button.Pressed, "#search")
     def on_search_button_pressed(self) -> None:
-        input: str = self.query_one(Input)
-        item_id: str = input.value
-
-        print("item id before validation: ", item_id)
-
+        input_widget: Input = self.query_one(Input)
+        item_id: str = input_widget.value
         if item_id:
-            print("item id within validation: ", item_id)
-            print("executing db operation command...")
-            # TODO(bug): fix fetched data => this is where the bug is and it returns None
             rows = self.db.fetch_item_by_id(item_id)
-            print("this is what rows is fetched by item id: ", rows)
 
-            # TODO(bug): fix how the database returns the results. they aren't exact matches even if the search box is.
-            # the search query displays the same wrong result even if the input is wrong (not an entry)
-
-            print("rows from search function", rows)
             self.refresh_table_callback(rows)
 
     @on(Button.Pressed, "#export")
@@ -117,31 +101,10 @@ class DatabaseWidget(Widget):
         print("[TEST] export to csv [TEST]")
         self.db.export_to_csv()
 
-    async def on_db_refresh(self) -> None:
-        pass
-
-    # TODO: add event handler for db operations
-    @on(UtilBoxWidget.AddItem)
-    def handle_add_item(self, message: UtilBoxWidget.AddItem) -> None:
-        self.db.add_inv_item(message.barcode, message.mac)
+    @on(Button.Pressed, "#refresh")
+    def on_refresh(self) -> None:
         self.refresh_all_items()
 
-    @on(UtilBoxWidget.DeleteItem)
-    def handle_delete_item(self, message: UtilBoxWidget.DeleteItem):
-        pass
-
-    @on(UtilBoxWidget.SearchItem)
-    def handle_search_item(self, message: UtilBoxWidget.SearchItem):
-        pass
-
-    @on(UtilBoxWidget.ClearDatabase)
-    def handle_clear_database(self, message: UtilBoxWidget.ClearDatabase):
-        pass
-
-    @on(UtilBoxWidget.ImportData)
-    def handle_import_data(self, message: UtilBoxWidget.ImportData):
-        pass
-
-    @on(UtilBoxWidget.ExportData)
-    def handle_export_data(self, message: UtilBoxWidget.ExportData):
-        pass
+    # @on(Button.Pressed, "#go_back")
+    # def on_back_button_pressed(self) -> None:
+    #     self.app.switch_screen(screens.home.Home())
