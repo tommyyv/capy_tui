@@ -1,38 +1,35 @@
 # standard
+import pathlib
 
 # framework
 from textual.app import App
 
 # user-defined
 from screens.home import Home
+from services.db import Database
 
-"""data model
-id: PK
-name: String
-model: String
-barcode: String
-quantity: Integer
-initial_entry: DateTime
-last_updated: DateTime
-"""
+DATABASE_PATH = pathlib.Path().home() / "dev/infra/db/capy_tui/in_memory.db"
 
 
 class CapyTUI(App):
-    TITLE = "CapyTUI"
-    # CSS_PATH = "styles/main.tcss"
-    BINDINGS = []
-    SCREENS = {"home": Home}
-    INITIAL_SCREEN = "home"
+    CSS = """
+    .with-border {
+        border: heavy green;
+    }
+    """
 
-    def __init__(self):
+    # CSS_PATH = "styles/main.tcss"
+    TITLE = "CapyTUI"
+
+    def __init__(self, db_path):
         super().__init__()
+        self.db: Database = Database(db_path)
 
     def on_mount(self) -> None:
         self.theme = "gruvbox"
-
-    def on_ready(self) -> None:
-        self.push_screen("home")
+        self.push_screen(Home(self.db))
 
 
 if __name__ == "__main__":
-    CapyTUI().run()
+    app = CapyTUI(DATABASE_PATH)
+    app.run()
