@@ -9,21 +9,15 @@ from typing import List, Tuple
 # user-defined
 
 
-DATABASE_PATH = pathlib.Path().home() / "dev/infra/db/capy_tui/in_memory.db"
-
-
 class Database:
-    # TODO: refactor public to non-public methods for create_table and run_query => users shouldn't be interacting with
-    # these methods
-    # NOTE: CRUD functions work, need to revise a few but overall, it works.
-    def __init__(self, db_path=DATABASE_PATH):
+    def __init__(self, db_path: str):
         self.db_conn = sqlite3.connect(db_path)
         self.conn_cursor = self.db_conn.cursor()
         self._create_inv_table()
 
     def _create_inv_table(self) -> None:
         # TODO: add model field -> model TEXT NOT NULL
-        query = """
+        query = f"""
             CREATE TABLE IF NOT EXISTS test_db (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 doe TEXT NOT NULL,
