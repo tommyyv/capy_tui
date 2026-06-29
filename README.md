@@ -1,7 +1,7 @@
 # Introduction
 An inventory management terminal user-interface (TUI).
 
-## Philosophy
+## Design & Architecture
 
 The overall goal of this project is to keep the elements native to the Python standard library, limiting the reliance on
 third-party libraries.
@@ -13,12 +13,15 @@ require extensive support.
 - Portable
 - Maintainable/Scalable
 
+
+Please refer to the [Software Design & Architecture](./docs/SAD.md) for more information.
+
 ## Tech Stack
 
 - Python
 - SQLite
 - Textual
-- Docker
+- Docker (not yet)
 
 <img src="./docs/2025nov12_inv_mgnt_design.png" alt="Design & architecture"></img>
 
