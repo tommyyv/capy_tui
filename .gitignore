@@ -4,8 +4,8 @@ env
 .venv
 venv
 src/test.py
-
 src/data/
+src.bak/
 
 __pycache__
 
