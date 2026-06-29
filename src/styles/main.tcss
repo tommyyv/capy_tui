@@ -1,31 +1,92 @@
-# Header {
-#     dock: top;
-#     background: green;
-# }
-#
-# Footer {
-#     dock: bottom;
-#     background: purple;
-# }
-#
-# Container {}
-#
-# Button {
-#     width: auto;
-#     padding: 1 2;
-#     border: solid red;
-# }
-#
-# Button:hover {
-#     background: white !important;
-#     color: black;
-# }
-#
-# #content {
-#   background: $primary-background;
-# }
-#
-# # WIDGETS
-# HomeNav {
-#   align: center middle;
-# }
+# asset_manager/styles.tcss
+/* Global styles */
+Screen {
+    background: $panel;
+}
+
+.title {
+    text-align: center;
+    content-align: center middle;
+    color: $accent;
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+.subtitle {
+    text-align: center;
+    content-align: center middle;
+    color: $text-muted;
+    margin-bottom: 2;
+}
+
+/* Button styles */
+Button {
+    margin: 1 2;
+}
+
+Button.primary {
+    border: tall $primary;
+    background: $primary;
+}
+
+Button.success {
+    border: tall $success;
+    background: $success;
+}
+
+Button.warning {
+    border: tall $warning;
+    background: $warning;
+}
+
+Button.error {
+    border: tall $error;
+    background: $error;
+}
+
+Button.default {
+    border: tall $secondary;
+    background: $secondary;
+}
+
+/* Input styles */
+Input {
+    width: 100%;
+    margin: 0 2;
+}
+
+/* Table styles */
+DataTable {
+    height: 1fr;
+    border: solid $primary;
+    margin: 1 2;
+}
+
+/* Container styles */
+Container {
+    layout: vertical;
+    padding: 1;
+}
+
+Vertical {
+    align: center middle;
+    height: 1fr;
+}
+
+Horizontal {
+    align: center middle;
+    margin: 1 0;
+}
+
+Center {
+    align: center middle;
+    height: auto;
+}
+
+/* Footer styling */
+Footer {
+    dock: bottom;
+    background: $surface;
+    color: $text;
+    height: 3;
+}
