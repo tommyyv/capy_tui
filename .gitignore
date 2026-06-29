@@ -7,6 +7,11 @@ src/test.py
 src/data/
 src.bak/
 
+# database
+*.db
+*.sqlite
+*.sqlite3
+
 __pycache__
 
 DEVELOPER.md
