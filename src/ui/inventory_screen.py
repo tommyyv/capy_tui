@@ -4,7 +4,7 @@
 from textual.app import ComposeResult
 from textual.screen import ModalScreen
 from textual.widgets import Header, Footer, DataTable, Button, Input, Label
-from textual.containers import Container, Vertical
+from textual.containers import Container, Horizontal, Vertical
 from textual import on
 
 # user-defined
@@ -37,7 +37,10 @@ class InventoryScreen(ModalScreen):
 
                 yield Label("MAC Address:")
                 yield Input(placeholder="Scan MAC address...", id="mac-input")
-            yield Button("Search", id="search-btn", variant="success")
+
+            with Horizontal():
+                yield Button("Search", id="search-btn", variant="success")
+                yield Button("Back", id="back-btn", variant="default")
 
         # yield Button("EXPORT", id="export")
         # yield Button("REFRESH", id="refresh")
@@ -119,3 +122,8 @@ class InventoryScreen(ModalScreen):
         # if self.current_barcode or self.current_mac:
         self.query(Input).focus()
         self.search_assets()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Handle button presses."""
+        if event.button.id == "back-btn":
+            self.app.pop_screen()
