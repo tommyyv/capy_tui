@@ -93,7 +93,7 @@ class ScanScreen(ModalScreen):
         """Handle input submissions.
         Press enter after the mac input or click the ADD ASSET button."""
         self.current_barcode: str = self.query_one("#barcode-input", Input).value[5:]
-        self.current_mac: str = self.query_one("#mac-input", Input).value.capitalize()
+        self.current_mac: str = self.query_one("#mac-input", Input).value.upper()
 
         if self.current_barcode and self.current_mac:
             self.query_one("#mac-input", Input).focus()
