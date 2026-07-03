@@ -7,9 +7,10 @@ from textual.app import ComposeResult
 from textual.screen import ModalScreen
 from textual.widgets import Header, Footer, DataTable, Input, Button, Label
 from textual.containers import Container, Vertical, Horizontal
+from textual import on
 
 # user-defined
-from domain.asset import AssetStatus
+from domain.asset import Asset, AssetStatus
 from domain import asset_ops
 
 
@@ -20,6 +21,7 @@ class ExcessScreen(ModalScreen):
         ("escape", "app.pop_screen", "Back"),
         ("ctrl+r", "refresh_table", "Refresh"),
         ("ctrl+e", "export_csv", "Export"),
+        ("ctrl+d", "delete_row_selected", "Delete"),
     ]
 
     def __init__(self, repository):
@@ -36,7 +38,7 @@ class ExcessScreen(ModalScreen):
             with Vertical():
                 yield Label("Excess Assets", classes="title")
 
-                with Horizontal():
+                with Vertical():
                     yield Label("DOE Barcode:")
                     yield Input(placeholder="Scan DOE barcode...", id="barcode-input")
 
@@ -44,9 +46,9 @@ class ExcessScreen(ModalScreen):
                     yield Input(placeholder="Scan MAC address...", id="mac-input")
 
                 with Horizontal():
-                    yield Button("Mark Excess", id="excess-btn", variant="primary")
+                    yield Button("Excess", id="excess-btn", variant="primary")
                     yield Button("Search", id="search-btn", variant="success")
-                    yield Button("Add", id="add-btn", variant="warning")
+                    yield Button("Add To Excess", id="add-btn", variant="warning")
                     yield Button("Delete", id="delete-btn", variant="error")
                     yield Button("Back", id="back-btn", variant="default")
 
@@ -77,24 +79,8 @@ class ExcessScreen(ModalScreen):
         table = self.query_one(DataTable)
         table.clear()
 
-        # Get excess assets from repository
-        with self.repository.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT * FROM excess_assets ORDER BY updated_timestamp DESC"
-            )
-            results = cursor.fetchall()
-
-        from domain.asset import Asset, AssetStatus
-
-        for row in results:
-            asset = Asset(
-                barcode=row["barcode"],
-                mac_address=row["mac_address"],
-                status=AssetStatus(row["status"]),
-                created_timestamp=row["created_timestamp"],
-                updated_timestamp=row["updated_timestamp"],
-            )
+        assets = asset_ops.find_all_excess_assets(self.repository)
+        for asset in assets:
             table.add_row(
                 asset.barcode,
                 asset.mac_address,
@@ -103,17 +89,24 @@ class ExcessScreen(ModalScreen):
                 asset.updated_timestamp.strftime("%Y-%m-%d %H:%M"),
             )
 
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        """Handle input submissions."""
-        if event.input.id == "barcode-input":
-            self.current_barcode = event.value
-            self.query_one("#mac-input").focus()
-        elif event.input.id == "mac-input":
-            self.current_mac = event.value
-            # Auto-mark as excess when both inputs are filled
-            if self.current_barcode and self.current_mac:
-                self.mark_excess()
+    @on(Input.Submitted, "#mac-input")
+    @on(Button.Pressed, "#excess-btn")
+    @on(Button.Pressed, "#add-btn")
+    def on_input_submitted(self, event: Button.Pressed) -> None:
+        """Handle input submissions.
+        Press enter after the mac input or click the ADD TO EXCESS button."""
+        self.current_barcode: str = self.query_one("#barcode-input", Input).value[5:]
+        self.current_mac: str = self.query_one("#mac-input", Input).value.upper()
 
+        if self.current_barcode and self.current_mac:
+            self.query_one("#mac-input", Input).focus()
+
+            if event.button.id == "excess-btn":
+                self.mark_excess()
+            elif event.button.id == "add-btn":
+                self.add_asset()
+
+    # NOTE: do i even need this?
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
         if event.button.id == "excess-btn":
@@ -144,8 +137,8 @@ class ExcessScreen(ModalScreen):
             self.notify("Asset not found in inventory", severity="error")
             return
 
-        # Update status in main table and add to excess table
-        updated_asset = asset.update_status(AssetStatus.EXCESSED)
+        # Update status in main table
+        updated_asset = asset.update_status(AssetStatus.PENDING_EXCESS)
         self.repository.update(updated_asset)
 
         # Add to excess table
@@ -155,21 +148,21 @@ class ExcessScreen(ModalScreen):
         self.refresh_table()
 
         # Clear inputs
-        self.query_one("#barcode-input").value = ""
-        self.query_one("#mac-input").value = ""
+        self.query_one("#barcode-input", Input).value = ""
+        self.query_one("#mac-input", Input).value = ""
         self.current_barcode = ""
         self.current_mac = ""
         self.query_one("#barcode-input").focus()
 
     def search_assets(self) -> None:
         """Search for excess assets."""
-        search_input = self.query_one("#barcode-input").value
+        search_input = self.query_one("#barcode-input", Input).value
         if not search_input:
             self.notify("Please enter a search term", severity="warning")
             return
 
         # Search in excess table
-        results = self.repository.search_excess(search_input)
+        results = self.repository.search(search_input)
 
         table = self.query_one(DataTable)
         table.clear()
@@ -191,10 +184,9 @@ class ExcessScreen(ModalScreen):
             return
 
         # Create a new asset and mark as excess
-        from domain.asset import Asset
 
         asset = Asset.create_new(self.current_barcode, self.current_mac)
-        excess_asset = asset.update_status(AssetStatus.EXCESSED)
+        excess_asset = asset.update_status(AssetStatus.PENDING_EXCESS)
 
         # Save to excess table
         saved_asset = self.repository.save_to_excess(excess_asset)
@@ -203,8 +195,8 @@ class ExcessScreen(ModalScreen):
         self.refresh_table()
 
         # Clear inputs
-        self.query_one("#barcode-input").value = ""
-        self.query_one("#mac-input").value = ""
+        self.query_one("#barcode-input", Input).value = ""
+        self.query_one("#mac-input", Input).value = ""
         self.current_barcode = ""
         self.current_mac = ""
         self.query_one("#barcode-input").focus()
@@ -226,6 +218,9 @@ class ExcessScreen(ModalScreen):
             self.refresh_table()
         else:
             self.notify("Asset not found in excess table", severity="error")
+
+    def action_delete_asset(self) -> None:
+        self.delete_asset()
 
     def action_refresh_table(self) -> None:
         """Action to refresh the table."""
@@ -266,3 +261,20 @@ class ExcessScreen(ModalScreen):
                 )
 
         self.notify(f"Excess assets exported to {filename}", severity="info")
+
+    def action_delete_row_selected(self) -> None:
+        table = self.query_one(DataTable)
+
+        # Check if a row is actually selected/cursor is active
+        if table.cursor_coordinate is not None:
+            # Convert coordinate to row_key
+            row_key, _ = table.coordinate_to_cell_key(table.cursor_coordinate)
+            if row_key:
+                doe = table.get_row(row_key)[0]
+                mac = table.get_row(row_key)[1]
+
+                self.repository.delete_from_excess_by_barcode_and_mac(doe, mac)
+
+                table.remove_row(row_key)
+
+                self.refresh_table()
