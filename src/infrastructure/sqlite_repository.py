@@ -22,7 +22,7 @@ class SQLiteRepository:
             cursor.execute(
                 """
                 INSERT INTO assets (barcode, mac_address, status, created_timestamp, updated_timestamp)
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?)
             """,
                 (
                     asset.barcode,
@@ -42,7 +42,7 @@ class SQLiteRepository:
             cursor.execute(
                 """
                 INSERT INTO excess_assets (barcode, mac_address, status, created_timestamp, updated_timestamp)
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?)
             """,
                 (
                     asset.barcode,
@@ -180,8 +180,8 @@ class SQLiteRepository:
                 barcode=row["barcode"],
                 mac_address=row["mac_address"],
                 status=AssetStatus(row["status"]),
-                created_timestamp=row["created_timestamp"],
-                updated_timestamp=row["updated_timestamp"],
+                created_timestamp=datetime.fromisoformat(row["created_timestamp"]),
+                updated_timestamp=datetime.fromisoformat(row["updated_timestamp"]),
             )
             for row in results
         ]
