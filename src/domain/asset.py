@@ -31,7 +31,7 @@ class Asset:
         return cls(
             barcode=barcode,
             mac_address=mac_address.replace(":", "").replace("-", ""),
-            status=AssetStatus.ACTIVE,
+            status=AssetStatus.IN_STOCK,
             created_timestamp=now,
             updated_timestamp=now,
         )
