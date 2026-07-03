@@ -20,6 +20,10 @@ def find_all_assets(repository: SQLiteRepository) -> List[Asset]:
     return repository.get_all()
 
 
+def find_all_excess_assets(repository: SQLiteRepository) -> List[Asset]:
+    return repository.get_all_excess()
+
+
 def create_asset(
     repository: SQLiteRepository,
     barcode: str,
