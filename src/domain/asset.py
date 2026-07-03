@@ -10,8 +10,9 @@ from enum import Enum
 
 class AssetStatus(Enum):
     ACTIVE = "Active"
-    EXCESSED = "Excessed"
+    PENDING_EXCESS = "Pending Excess"
     IN_STOCK = "In-stock"
+    EXCESS = "Excessed"
 
 
 @dataclass(frozen=True)
