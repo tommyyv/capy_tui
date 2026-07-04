@@ -69,6 +69,13 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
 
+      - name: Debug - List Files
+        run: |
+          echo "Current Directory:"
+          pwd
+          echo "All Files and Folders:"
+          ls -R .
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
