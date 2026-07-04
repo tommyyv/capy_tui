@@ -54,7 +54,7 @@ jobs:
           # --onefile creates a single executable
           # --windowed hides the console (optional for TUIs, but usually you want the terminal)
           # --name ensures the output has a consistent name across platforms
-          pyinstaller --onefile --name capy_tui src/app.py
+          pyinstaller --onefile --name capy_tui --add-data "src/styles:styles" src/app.py
 
       - name: Rename for Release
         shell: bash
