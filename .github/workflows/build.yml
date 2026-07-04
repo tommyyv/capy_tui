@@ -53,6 +53,23 @@ jobs:
           # --name ensures the output has a consistent name across platforms
           pyinstaller --onefile --name capy_tui src/app.py
 
+      - name: Rename for Release
+        shell: bash
+        run: |
+          echo "Listing dist folder before rename:"
+          ls -la dist/
+
+          if [ -f "dist/capy_tui.exe" ]; then
+            mv dist/capy_tui.exe "${{ matrix.release_name }}"
+            echo "Renamed capy_tui.exe to ${{ matrix.release_name }}"
+          elif [ -f "dist/capy_tui" ]; then
+            mv dist/capy_tui "${{ matrix.release_name }}"
+            echo "Renamed capy_tui to ${{ matrix.release_name }}"
+          else
+            echo "ERROR: No executable found in dist!"
+            exit 1
+          fi
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
