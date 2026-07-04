@@ -21,13 +21,13 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: capy_tui-linux-amd64
-            executable_path: capy_tui
+            executable_path: dist/capy_tui
           - os: windows-latest
             artifact_name: capy_tui-windows-amd64
-            executable_path: capy_tui.exe
+            executable_path: dist/capy_tui.exe
           - os: macos-latest
             artifact_name: capy_tui-macos-arm64
-            executable_path: capy_tui
+            executable_path: dist/capy_tui
 
     steps:
       - name: Checkout code
@@ -80,8 +80,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            capy_tui-linux-amd64/*
-            capy_tui-windows-amd64/*
-            capy_tui-macos-arm64/*
+            capy_tui
+            capy_tui.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
