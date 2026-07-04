@@ -47,7 +47,7 @@ jobs:
           # --onefile creates a single executable
           # --windowed hides the console (optional for TUIs, but usually you want the terminal)
           # --name ensures the output has a consistent name across platforms
-          pyinstaller --onefile --name capy_tui capy_tui.py
+          pyinstaller --onefile --name capy_tui src/app.py
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
