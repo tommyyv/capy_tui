@@ -46,11 +46,9 @@ class ExcessScreen(ModalScreen):
                     yield Input(placeholder="Scan MAC address...", id="mac-input")
 
                 with Horizontal():
-                    yield Button("Excess", id="excess-btn", variant="primary")
-                    yield Button("Search", id="search-btn", variant="success")
+                    yield Button("Move To Excess", id="excess-btn", variant="primary")
                     yield Button("Add To Excess", id="add-btn", variant="warning")
-                    yield Button("Delete", id="delete-btn", variant="error")
-                    yield Button("Back", id="back-btn", variant="default")
+                    yield Button("Search", id="search-btn", variant="success")
 
                 yield DataTable(id="excess-table")
 
@@ -100,7 +98,6 @@ class ExcessScreen(ModalScreen):
 
         if self.current_barcode and self.current_mac:
             self.query_one("#mac-input", Input).focus()
-
             if event.button.id == "excess-btn":
                 self.mark_excess()
             elif event.button.id == "add-btn":
