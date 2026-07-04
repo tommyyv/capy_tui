@@ -73,8 +73,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            capy_tui-linux-amd64/*
-            capy_tui-windows-amd64/*
-            capy_tui-macos-arm64/*
+            capy_tui-linux-amd64/dist/*
+            capy_tui-windows-amd64/dist/*
+            capy_tui-macos-arm64/dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
