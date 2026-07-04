@@ -1,5 +1,8 @@
 name: Build Textual TUI
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ v0.0.1b-dev ]
