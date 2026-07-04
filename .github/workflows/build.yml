@@ -21,15 +21,12 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: capy_tui-linux-amd64
-            executable_path: dist/capy_tui
             release_name: capy_tui-linux-amd64
           - os: windows-latest
             artifact_name: capy_tui-windows-amd64
-            executable_path: dist/capy_tui.exe
             release_name: capy_tui-windows-amd64.exe
           - os: macos-latest
             artifact_name: capy_tui-macos-arm64
-            executable_path: dist/capy_tui
             release_name: capy_tui-macos-arm64
 
 
@@ -81,17 +78,20 @@ jobs:
           ls -R .
 
       - name: Rename files for unique release names
+        shell: bash
         run: |
-          mv capy_tui-linux-amd64/capy_tui capy_tui-linux-amd64
-          mv capy_tui-windows-amd64/capy_tui.exe capy_tui-windows-amd64.exe
-          mv capy_tui-macos-arm64/capy_tui capy_tui-macos-arm64
+          if [ -f "dist/capy_tui.exe" ]; then
+            mv dist/capy_tui.exe "${{ matrix.release_name }}"
+          elif [ -f "dist/capy_tui" ]; then
+            mv dist/capy_tui "${{ matrix.release_name }}"
+          fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            capy_tui-linux-amd64
-            capy_tui-windows-amd64.exe
-            capy_tui-macos-arm64
+            capy_tui-linux-amd64/capy_tui-linux-amd64
+            capy_tui-windows-amd64/capy_tui-windows-amd64.exe
+            capy_tui-macos-arm64/capy_tui-macos-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
