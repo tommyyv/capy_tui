@@ -22,12 +22,15 @@ jobs:
           - os: ubuntu-latest
             artifact_name: capy_tui-linux-amd64
             release_name: capy_tui-linux-amd64
+            executable_path: dist/capy_tui-linux-amd64
           - os: windows-latest
             artifact_name: capy_tui-windows-amd64
             release_name: capy_tui-windows-amd64.exe
+            executable_path: dist/capy_tui-windows-amd64.exe
           - os: macos-latest
             artifact_name: capy_tui-macos-arm64
             release_name: capy_tui-macos-arm64
+            executable_path: dist/capy_tui-macos-arm64
 
 
     steps:
