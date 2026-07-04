@@ -1,0 +1,77 @@
+name: Build Textual TUI
+
+on:
+  push:
+    branches: [ v0.0.1b-dev ]
+    tags: [ 'v*' ] # Trigger on version tags like v1.0.0
+  pull_request:
+    branches: [ v0.0.1b-dev ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            artifact_name: capy_tui-linux-amd64
+            executable_path: dist/capy_tui
+          - os: windows-latest
+            artifact_name: capy_tui-windows-amd64
+            executable_path: dist/capy_tui.exe
+          - os: macos-latest
+            artifact_name: capy_tui-macos-arm64
+            executable_path: dist/capy_tui
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: '3.14.6'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build with PyInstaller
+        run: |
+          # --onefile creates a single executable
+          # --windowed hides the console (optional for TUIs, but usually you want the terminal)
+          # --name ensures the output has a consistent name across platforms
+          pyinstaller --onefile --name capy_tui capy_tui.py
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.executable_path }}
+          retention-days: 90
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            capy_tui-linux-amd64/*
+            capy_tui-windows-amd64/*
+            capy_tui-macos-arm64/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
