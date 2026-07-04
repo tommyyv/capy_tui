@@ -79,18 +79,19 @@ jobs:
           pwd
           echo "All Files and Folders:"
           ls -R .
-      # - name: Rename files for unique release names
-      #   run: |
-      #     mv capy_tui-linux-amd64/capy_tui capy_tui-linux-amd64
-      #     mv capy_tui-windows-amd64/capy_tui.exe capy_tui-windows-amd64.exe
-      #     mv capy_tui-macos-arm64/capy_tui capy_tui-macos-arm64
+
+      - name: Rename files for unique release names
+        run: |
+          mv capy_tui-linux-amd64/capy_tui capy_tui-linux-amd64
+          mv capy_tui-windows-amd64/capy_tui.exe capy_tui-windows-amd64.exe
+          mv capy_tui-macos-arm64/capy_tui capy_tui-macos-arm64
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            capy_tui-linux-amd64/capy_tui
-            capy_tui-windows-amd64/capy_tui.exe
-            capy_tui-macos-arm64/capy_tui
+            capy_tui-linux-amd64
+            capy_tui-windows-amd64.exe
+            capy_tui-macos-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
