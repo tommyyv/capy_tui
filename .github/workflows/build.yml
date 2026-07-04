@@ -65,11 +65,9 @@ jobs:
           if [ -f "dist/capy_tui.exe" ]; then
             mv dist/capy_tui.exe "${{ matrix.release_name }}"
             echo "Renamed capy_tui.exe to ${{ matrix.release_name }}"
-            ls -la dist/
           elif [ -f "dist/capy_tui" ]; then
             mv dist/capy_tui "${{ matrix.release_name }}"
             echo "Renamed capy_tui to ${{ matrix.release_name }}"
-            ls -la dist/
           else
             echo "ERROR: No executable found in dist!"
             exit 1
@@ -99,14 +97,14 @@ jobs:
           echo "All Files and Folders:"
           ls -R .
 
-      - name: Rename files for unique release names
-        shell: bash
-        run: |
-          if [ -f "dist/capy_tui.exe" ]; then
-            mv dist/capy_tui.exe "${{ matrix.release_name }}"
-          elif [ -f "dist/capy_tui" ]; then
-            mv dist/capy_tui "${{ matrix.release_name }}"
-          fi
+      # - name: Rename files for unique release names
+      #   shell: bash
+      #   run: |
+      #     if [ -f "capy_tui.exe" ]; then
+      #       mv dist/capy_tui.exe "${{ matrix.release_name }}"
+      #     elif [ -f "dist/capy_tui" ]; then
+      #       mv dist/capy_tui "${{ matrix.release_name }}"
+      #     fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
