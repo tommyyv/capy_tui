@@ -5,10 +5,16 @@ permissions:
 
 on:
   push:
-    branches: [ v0.0.1b-dev ]
-    tags: [ 'v*' ] # Trigger on version tags like v1.0.0
+    branches:
+      - main
+      - 'release/**'
+      - 'feature/**'
+    tags:
+      - 'v*'
   pull_request:
-    branches: [ v0.0.1b-dev ]
+    branches:
+      - main
+      - 'release/**'
 
 jobs:
   build:
@@ -96,15 +102,6 @@ jobs:
           pwd
           echo "All Files and Folders:"
           ls -R .
-
-      # - name: Rename files for unique release names
-      #   shell: bash
-      #   run: |
-      #     if [ -f "capy_tui.exe" ]; then
-      #       mv dist/capy_tui.exe "${{ matrix.release_name }}"
-      #     elif [ -f "dist/capy_tui" ]; then
-      #       mv dist/capy_tui "${{ matrix.release_name }}"
-      #     fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
