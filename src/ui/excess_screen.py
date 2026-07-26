@@ -13,7 +13,9 @@ from textual import on
 # user-defined
 from domain.asset import Asset, AssetStatus
 from domain import asset_ops
-from ui.test import BASE_DIR, DATA_DIR
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
 
 
 class ExcessScreen(ModalScreen):
@@ -25,10 +27,6 @@ class ExcessScreen(ModalScreen):
         ("ctrl+e", "export_csv", "Export"),
         ("ctrl+d", "delete_row_selected", "Delete"),
     ]
-
-    BASE_DIR = Path(__file__).resolve().parent.parent
-
-    DATA_DIR = BASE_DIR / "data"
 
     def __init__(self, repository):
         super().__init__()
