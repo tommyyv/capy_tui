@@ -1,6 +1,7 @@
 # standard
 import csv
 from datetime import datetime
+from pathlib import Path
 
 # framework
 from textual.app import ComposeResult
@@ -12,6 +13,7 @@ from textual import on
 # user-defined
 from domain.asset import Asset, AssetStatus
 from domain import asset_ops
+from ui.test import BASE_DIR, DATA_DIR
 
 
 class ExcessScreen(ModalScreen):
@@ -23,6 +25,10 @@ class ExcessScreen(ModalScreen):
         ("ctrl+e", "export_csv", "Export"),
         ("ctrl+d", "delete_row_selected", "Delete"),
     ]
+
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    DATA_DIR = BASE_DIR / "data"
 
     def __init__(self, repository):
         super().__init__()
@@ -275,3 +281,34 @@ class ExcessScreen(ModalScreen):
                 table.remove_row(row_key)
 
                 self.refresh_table()
+
+    def action_export_csv(self) -> None:
+        """Export current table to CSV."""
+        assets = asset_ops.find_all_assets(self.repository)
+
+        filename = f"excessed_assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        path = BASE_DIR / DATA_DIR / filename
+        with open(path, "w", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(
+                [
+                    "DOE Barcode",
+                    "MAC Address",
+                    "Status",
+                    "Created",
+                    "Updated",
+                ]
+            )
+
+            for asset in assets:
+                writer.writerow(
+                    [
+                        asset.barcode,
+                        asset.mac_address,
+                        asset.status.value,
+                        asset.created_timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                        asset.updated_timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                    ]
+                )
+
+        self.notify(f"Assets exported to {filename}", severity="info")
