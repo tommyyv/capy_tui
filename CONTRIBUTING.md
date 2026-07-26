@@ -24,6 +24,7 @@ ex: git checkout -b release/v0.0.2
 (compare) feature/add-dark-mode --merge--> (base) release/v0.0.2
 ```
 (For reviewer/approver & testers)
+
 6. Review, approve, and merge (feat->release); a RC (release candidate) will be released for beta testers
 7. Pull & test the latest release branch locally: `git checkout <BRANCH_NAME> && git pull origin <BRANCH_NAME>`
 8. Create a RC for testers:
