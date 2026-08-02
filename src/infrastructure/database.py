@@ -1,7 +1,11 @@
-# asset_manager/infrastructure/database.py
+# standard
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
+
+# framework
+
+# user-defined
 from .schema import SCHEMA_V1
 
 
