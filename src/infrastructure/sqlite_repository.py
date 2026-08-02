@@ -21,11 +21,13 @@ class SQLiteRepository:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO assets (barcode, mac_address, status, created_timestamp, updated_timestamp)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO assets (building, room, asset_tag, mac_address, status, created_timestamp, updated_timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    asset.barcode,
+                    asset.building,
+                    asset.room,
+                    asset.asset_tag,
                     asset.mac_address,
                     asset.status.value,
                     asset.created_timestamp.isoformat(),
@@ -41,11 +43,13 @@ class SQLiteRepository:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO excess_assets (barcode, mac_address, status, created_timestamp, updated_timestamp)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO excess_assets (building, room, asset_tag, mac_address, status, created_timestamp, updated_timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    asset.barcode,
+                    asset.building,
+                    asset.room,
+                    asset.asset_tag,
                     asset.mac_address,
                     asset.status.value,
                     asset.created_timestamp.isoformat(),
@@ -63,12 +67,12 @@ class SQLiteRepository:
                 """
                 UPDATE assets
                 SET status = ?, updated_timestamp = ?
-                WHERE barcode = ? AND mac_address = ?
+                WHERE asset_tag = ? AND mac_address = ?
             """,
                 (
                     asset.status.value,
                     asset.updated_timestamp.isoformat(),
-                    asset.barcode,
+                    asset.asset_tag,
                     asset.mac_address,
                 ),
             )
@@ -76,17 +80,19 @@ class SQLiteRepository:
         return asset
 
     def find_by_barcode_and_mac(
-        self, barcode: str, mac_address: str
+        self, asset_tag: str, mac_address: str
     ) -> Optional[Asset]:
-        """Find an asset by barcode and MAC address."""
+        """Find an asset by asset_tag and MAC address."""
         result = self.db.execute_query(
-            "SELECT * FROM assets WHERE barcode = ? AND mac_address = ?",
-            (barcode, mac_address.replace(":", "").replace("-", "")),
+            "SELECT * FROM assets WHERE asset_tag = ? AND mac_address = ?",
+            (asset_tag, mac_address),
         )
         if result:
             row = result[0]
             return Asset(
-                barcode=row["barcode"],
+                building=row["building"],
+                room=row["room"],
+                asset_tag=row["asset_tag"],
                 mac_address=row["mac_address"],
                 status=AssetStatus(row["status"]),
                 created_timestamp=datetime.fromisoformat(row["created_timestamp"]),
@@ -101,7 +107,9 @@ class SQLiteRepository:
         )
         return [
             Asset(
-                barcode=row["barcode"],
+                building=row["building"],
+                room=row["room"],
+                asset_tag=row["asset_tag"],
                 mac_address=row["mac_address"],
                 status=AssetStatus(row["status"]),
                 created_timestamp=datetime.fromisoformat(row["created_timestamp"]),
@@ -117,7 +125,9 @@ class SQLiteRepository:
         )
         return [
             Asset(
-                barcode=row["barcode"],
+                building=row["building"],
+                room=row["room"],
+                asset_tag=row["asset_tag"],
                 mac_address=row["mac_address"],
                 status=AssetStatus(row["status"]),
                 created_timestamp=datetime.fromisoformat(row["created_timestamp"]),
@@ -126,21 +136,21 @@ class SQLiteRepository:
             for row in results
         ]
 
-    def delete_by_barcode_and_mac(self, barcode: str, mac_address: str) -> bool:
+    def delete_by_barcode_and_mac(self, asset_tag: str, mac_address: str) -> bool:
         """Delete an asset by barcode and MAC address."""
         count = self.db.execute_command(
             "DELETE FROM assets WHERE barcode = ? AND mac_address = ?",
-            (barcode, mac_address.replace(":", "").replace("-", "")),
+            (asset_tag, mac_address),
         )
         return count > 0
 
     def delete_from_excess_by_barcode_and_mac(
-        self, barcode: str, mac_address: str
+        self, asset_tag: str, mac_address: str
     ) -> bool:
         """Delete an excess asset by barcode and MAC address."""
         count = self.db.execute_command(
-            "DELETE FROM excess_assets WHERE barcode = ? AND mac_address = ?",
-            (barcode, mac_address.replace(":", "").replace("-", "")),
+            "DELETE FROM excess_assets WHERE asset_tag = ? AND mac_address = ?",
+            (asset_tag, mac_address),
         )
         return count > 0
 
@@ -149,14 +159,16 @@ class SQLiteRepository:
         results = self.db.execute_query(
             """
             SELECT * FROM assets
-            WHERE barcode LIKE ? OR mac_address LIKE ?
+            WHERE asset_tag LIKE ? OR mac_address LIKE ?
             ORDER BY updated_timestamp DESC
             """,
             (f"%{search_term}%", f"%{search_term}%"),
         )
         return [
             Asset(
-                barcode=row["barcode"],
+                building=row["building"],
+                room=row["room"],
+                asset_tag=row["asset_tag"],
                 mac_address=row["mac_address"],
                 status=AssetStatus(row["status"]),
                 created_timestamp=datetime.fromisoformat(row["created_timestamp"]),
@@ -170,14 +182,16 @@ class SQLiteRepository:
         results = self.db.execute_query(
             """
             SELECT * FROM excess_assets
-            WHERE barcode LIKE ? OR mac_address LIKE ?
+            WHERE asset_tag LIKE ? OR mac_address LIKE ?
             ORDER BY updated_timestamp DESC
             """,
             (f"%{search_term}%", f"%{search_term}%"),
         )
         return [
             Asset(
-                barcode=row["barcode"],
+                building=row["building"],
+                room=row["room"],
+                asset_tag=row["asset_tag"],
                 mac_address=row["mac_address"],
                 status=AssetStatus(row["status"]),
                 created_timestamp=datetime.fromisoformat(row["created_timestamp"]),
