@@ -3,7 +3,9 @@ SCHEMA_V1 = {
     "assets": """
         CREATE TABLE IF NOT EXISTS assets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            barcode TEXT NOT NULL,
+            building,
+            room,
+            doe TEXT NOT NULL,
             mac_address TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'Active',
             created_timestamp TEXT NOT NULL,
@@ -14,7 +16,9 @@ SCHEMA_V1 = {
     "excess_assets": """
         CREATE TABLE IF NOT EXISTS excess_assets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            barcode TEXT NOT NULL,
+            building,
+            room,
+            doe TEXT NOT NULL,
             mac_address TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'Excessed',
             created_timestamp TEXT NOT NULL,
