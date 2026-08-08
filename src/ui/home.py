@@ -28,6 +28,7 @@ class HomeScreen(Screen):
                 yield Button("Scan Assets", id="scan-btn", variant="primary")
                 yield Button("View Inventory", id="inventory-btn", variant="success")
                 yield Button("Excess Assets", id="excess-btn", variant="warning")
+                yield Button("Import CSV", id="import-btn", variant="primary")
 
         # TODO: add bindings to footer
         # yield Footer()
@@ -46,3 +47,7 @@ class HomeScreen(Screen):
             from ui.excess_screen import ExcessScreen
 
             self.app.push_screen(ExcessScreen(self.repository))
+        elif event.button.id == "import-btn":
+            from ui.import_screen import ImportModalScreen
+
+            self.app.push_screen(ImportModalScreen())
