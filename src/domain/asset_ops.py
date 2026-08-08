@@ -8,6 +8,9 @@ from .asset import Asset, AssetStatus
 from infrastructure.sqlite_repository import SQLiteRepository
 
 
+# TODO: move this to workflows
+
+
 def find_asset_by_barcode_and_mac(
     repository: SQLiteRepository, barcode: str, mac_address: str
 ) -> Optional[Asset]:
@@ -26,11 +29,13 @@ def find_all_excess_assets(repository: SQLiteRepository) -> List[Asset]:
 
 def create_asset(
     repository: SQLiteRepository,
-    barcode: str,
+    building: str,
+    room: str,
+    asset_tag: str,
     mac_address: str,
 ) -> Asset:
     """Create a new asset."""
-    asset = Asset.create_new(barcode, mac_address)
+    asset = Asset.create_new(building, room, asset_tag, mac_address)
     return repository.save(asset)
 
 

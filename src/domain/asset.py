@@ -2,6 +2,7 @@
 from dataclasses import dataclass, replace
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 # framework
 
@@ -9,7 +10,6 @@ from enum import Enum
 
 
 # TODO: add strip method that removes the first 5 characters when scanning the DOE.
-# TODO: add dataclass for MacAddress
 class AssetStatus(Enum):
     ACTIVE = "Active"
     PENDING_EXCESS = "Pending Excess"
@@ -21,24 +21,24 @@ class AssetStatus(Enum):
 class Asset:
     """Represents an asset in the system."""
 
-    building: str
-    room: str
     asset_tag: str
-    mac_address: str
     status: AssetStatus
     created_timestamp: datetime
     updated_timestamp: datetime
+    mac_address: Optional[str] = None
+    building: Optional[str] = None
+    room: Optional[str] = None
 
     def __post_init__(self) -> None:
-        if not self._is_valid_mac_address(self.mac_address):
-            raise ValueError("Not a valid mac address.")
+        if self.mac_address is not None:
+            if not self._is_valid_mac_address(self.mac_address):
+                raise ValueError("Not a valid mac address.")
+
+            normalized_mac = self._normalize_mac_address(self.mac_address)
+            object.__setattr__(self, "mac_address", normalized_mac)
 
         if not self._is_valid_asset_tag(self.asset_tag):
             raise ValueError("Not a valid asset tag.")
-
-        normalized_mac = self._normalize_mac_address(self.mac_address)
-
-        object.__setattr__(self, "mac_address", normalized_mac)
 
     @staticmethod
     def _is_valid_asset_tag(asset_tag: str) -> bool:
@@ -74,7 +74,11 @@ class Asset:
 
     @classmethod
     def create_new(
-        cls, building: str, room: str, asset_tag: str, mac_address: str
+        cls,
+        asset_tag: str,
+        mac_address: Optional[str],
+        building: Optional[str],
+        room: Optional[str],
     ) -> "Asset":
         """Create a new asset with current timestamps."""
         now = datetime.now()
@@ -95,19 +99,3 @@ class Asset:
             status=new_status,
             updated_timestamp=datetime.now(),
         )
-
-
-asset = Asset(
-    building="1234",
-    room="999",
-    asset_tag="1234567",
-    mac_address="e0-1a-ea-aa-bb-cc",
-    status=AssetStatus.ACTIVE,
-    created_timestamp=datetime.now(),
-    updated_timestamp=datetime.now(),
-)
-
-print(asset.building)
-# print(asset._is_valid_mac_address(asset.mac_address))
-#
-# print(asset._normalize_mac_address(asset.mac_address))

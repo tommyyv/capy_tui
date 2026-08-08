@@ -3,27 +3,27 @@ SCHEMA_V1 = {
     "assets": """
         CREATE TABLE IF NOT EXISTS assets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            building,
-            room,
+            building TEXT,
+            room TEXT,
             asset_tag TEXT NOT NULL,
-            mac_address TEXT NOT NULL,
+            mac_address TEXT,
             status TEXT NOT NULL DEFAULT 'Active',
             created_timestamp TEXT NOT NULL,
             updated_timestamp TEXT NOT NULL,
-            UNIQUE(barcode, mac_address)
+            UNIQUE(asset_tag, mac_address)
         );
     """,
     "excess_assets": """
         CREATE TABLE IF NOT EXISTS excess_assets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            building,
-            room,
+            building TEXT,
+            room TEXT,
             asset_tag TEXT NOT NULL,
-            mac_address TEXT NOT NULL,
+            mac_address TEXT,
             status TEXT NOT NULL DEFAULT 'Excessed',
             created_timestamp TEXT NOT NULL,
             updated_timestamp TEXT NOT NULL,
-            UNIQUE(barcode, mac_address)
+            UNIQUE(asset_tag, mac_address)
         );
     """,
     "schema_versions": """
