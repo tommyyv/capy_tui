@@ -5,7 +5,7 @@ from pathlib import Path
 
 # framework
 from textual.app import ComposeResult
-from textual.screen import ModalScreen
+from textual.screen import Screen
 from textual.widgets import Header, Footer, DataTable, Input, Button, Label
 from textual.containers import Container, Vertical, Horizontal
 from textual import on
@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 
 
-class ExcessScreen(ModalScreen):
+class ExcessScreen(Screen):
     """Screen for managing excess assets."""
 
     BINDINGS = [
@@ -50,7 +50,6 @@ class ExcessScreen(ModalScreen):
                     yield Input(placeholder="Scan MAC address...", id="mac-input")
 
                 with Horizontal():
-                    yield Button("Move To Excess", id="excess-btn", variant="primary")
                     yield Button("Add To Excess", id="add-btn", variant="warning")
                     yield Button("Search", id="search-btn", variant="success")
 
@@ -84,7 +83,7 @@ class ExcessScreen(ModalScreen):
         assets = asset_ops.find_all_excess_assets(self.repository)
         for asset in assets:
             table.add_row(
-                asset.barcode,
+                asset.asset_tag,
                 asset.mac_address,
                 asset.status.value,
                 asset.created_timestamp.strftime("%Y-%m-%d %H:%M"),
@@ -92,9 +91,8 @@ class ExcessScreen(ModalScreen):
             )
 
     @on(Input.Submitted, "#mac-input")
-    @on(Button.Pressed, "#excess-btn")
     @on(Button.Pressed, "#add-btn")
-    def on_input_submitted(self, event: Button.Pressed) -> None:
+    def on_input_submitted(self) -> None:
         """Handle input submissions.
         Press enter after the mac input or click the ADD TO EXCESS button."""
         self.current_barcode: str = self.query_one("#barcode-input", Input).value[5:]
@@ -102,24 +100,30 @@ class ExcessScreen(ModalScreen):
 
         if self.current_barcode and self.current_mac:
             self.query_one("#mac-input", Input).focus()
-            if event.button.id == "excess-btn":
-                self.mark_excess()
-            elif event.button.id == "add-btn":
-                self.add_asset()
-
-    # NOTE: do i even need this?
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        """Handle button presses."""
-        if event.button.id == "excess-btn":
-            self.mark_excess()
-        elif event.button.id == "search-btn":
-            self.search_assets()
-        elif event.button.id == "add-btn":
             self.add_asset()
-        elif event.button.id == "delete-btn":
-            self.delete_asset()
-        elif event.button.id == "back-btn":
-            self.app.pop_screen()
+
+        if self.current_barcode:
+            self.query_one("#barcode-input", Input).focus()
+            self.add_asset_without_mac()
+
+    def add_asset_without_mac(self) -> None:
+        asset = Asset.create_new(
+            asset_tag=self.current_barcode, mac_address=None, building=None, room=None
+        )
+
+        excess_asset = asset.update_status(AssetStatus.PENDING_EXCESS)
+
+        # Save to excess table
+        saved_asset = self.repository.save_to_excess(excess_asset)
+        self.notify(f"Asset added to excess: {saved_asset.asset_tag}")
+        self.refresh_table()
+
+        # Clear inputs
+        self.query_one("#barcode-input", Input).value = ""
+        self.query_one("#mac-input", Input).value = ""
+        self.current_barcode = ""
+        self.current_mac = ""
+        self.query_one("#barcode-input").focus()
 
     def mark_excess(self) -> None:
         """Mark an asset as excess."""
@@ -186,13 +190,15 @@ class ExcessScreen(ModalScreen):
 
         # Create a new asset and mark as excess
 
-        asset = Asset.create_new(self.current_barcode, self.current_mac)
+        asset = Asset.create_new(
+            self.current_barcode, self.current_mac, building=None, room=None
+        )
         excess_asset = asset.update_status(AssetStatus.PENDING_EXCESS)
 
         # Save to excess table
         saved_asset = self.repository.save_to_excess(excess_asset)
 
-        self.notify(f"Asset added to excess: {saved_asset.barcode}")
+        self.notify(f"Asset added to excess: {saved_asset.asset_tag}")
         self.refresh_table()
 
         # Clear inputs
@@ -226,42 +232,6 @@ class ExcessScreen(ModalScreen):
     def action_refresh_table(self) -> None:
         """Action to refresh the table."""
         self.refresh_table()
-
-    def action_export_csv(self) -> None:
-        """Export current excess table to CSV."""
-        # Get excess assets from database
-        with self.repository.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT * FROM excess_assets ORDER BY updated_timestamp DESC"
-            )
-            results = cursor.fetchall()
-
-        filename = f"excess_assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-        with open(filename, "w", newline="") as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(
-                [
-                    "DOE Barcode",
-                    "MAC Address",
-                    "Status",
-                    "Created",
-                    "Updated",
-                ]
-            )
-
-            for row in results:
-                writer.writerow(
-                    [
-                        row["barcode"],
-                        row["mac_address"],
-                        row["status"],
-                        row["created_timestamp"],
-                        row["updated_timestamp"],
-                    ]
-                )
-
-        self.notify(f"Excess assets exported to {filename}", severity="info")
 
     def action_delete_row_selected(self) -> None:
         table = self.query_one(DataTable)
@@ -301,7 +271,7 @@ class ExcessScreen(ModalScreen):
             for asset in assets:
                 writer.writerow(
                     [
-                        asset.barcode,
+                        asset.asset_tag,
                         asset.mac_address,
                         asset.status.value,
                         asset.created_timestamp.strftime("%Y-%m-%d %H:%M:%S"),
@@ -309,4 +279,4 @@ class ExcessScreen(ModalScreen):
                     ]
                 )
 
-        self.notify(f"Assets exported to {filename}", severity="info")
+        self.notify(f"Assets exported to {filename}", severity="information")
