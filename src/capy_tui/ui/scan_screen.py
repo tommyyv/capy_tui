@@ -12,6 +12,7 @@ from textual import on
 # user-defined
 from domain.asset import AssetStatus
 from domain import asset_ops
+from application.asset_workflow import AssetWorkflow
 
 
 class ScanScreen(ModalScreen):
@@ -23,9 +24,9 @@ class ScanScreen(ModalScreen):
         ("ctrl+e", "export_csv", "Export"),
     ]
 
-    def __init__(self, repository):
+    def __init__(self, asset_workflow: AssetWorkflow):
         super().__init__()
-        self.repository = repository
+        self.asset_workflow = asset_workflow
         self.current_barcode = ""
         self.current_mac = ""
 
@@ -77,10 +78,12 @@ class ScanScreen(ModalScreen):
         table = self.query_one(DataTable)
         table.clear()
 
-        assets = asset_ops.find_all_assets(self.repository)
+        # assets = asset_ops.find_all_assets(self.repository)
+        assets = self.asset_workflow.find_all_assets()
+
         for asset in assets:
             table.add_row(
-                asset.barcode,
+                asset.asset_tag,
                 asset.mac_address,
                 asset.status.value,
                 asset.created_timestamp.strftime("%Y-%m-%d %H:%M"),
@@ -97,13 +100,19 @@ class ScanScreen(ModalScreen):
 
         if self.current_barcode and self.current_mac:
             self.query_one("#mac-input", Input).focus()
-            self.add_asset()
+            self.asset_workflow.create_asset(
+                building=None,
+                room=None,
+                asset_tag=self.current_barcode,
+                mac_address=self.current_mac,
+            )
 
     # NOTE: intentially using event approach because these are all the features we need
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
         if event.button.id == "add-btn":
-            self.add_asset()
+            pass
+            # self.asset_workflow.()
         # elif event.button.id == "search-btn":
         # self.search_assets()
         elif event.button.id == "update-btn":
@@ -113,40 +122,42 @@ class ScanScreen(ModalScreen):
         elif event.button.id == "back-btn":
             self.app.pop_screen()
 
-    def add_asset(self) -> None:
-        """Add an asset to the database."""
-        if not self.current_barcode or not self.current_mac:
-            self.notify(
-                f"Please enter both DOE barcode and MAC address: entered {self.current_barcode}, {self.current_mac}",
-                severity="warning",
-            )
-            return
-
-        # Check if asset already exists
-        existing_asset = asset_ops.find_asset_by_barcode_and_mac(
-            self.repository, self.current_barcode, self.current_mac
-        )
-
-        if existing_asset:
-            self.notify(
-                f"Asset already exists: {existing_asset.barcode}, {existing_asset.mac_address}",
-                title="Asset Exists",
-                severity="warning",
-            )
-        else:
-            # Create new asset
-            asset = asset_ops.create_asset(
-                self.repository, self.current_barcode, self.current_mac
-            )
-            self.notify(f"Asset added: {asset.barcode}")
-            self.refresh_table()
-
-        # Clear inputs for next scan
-        self.query_one("#barcode-input", Input).value = ""
-        self.query_one("#mac-input", Input).value = ""
-        self.current_barcode = ""
-        self.current_mac = ""
-        self.query_one("#barcode-input").focus()
+    # def add_asset(self) -> None:
+    #     """Add an asset to the database."""
+    #     if not self.current_barcode or not self.current_mac:
+    #         self.notify(
+    #             f"Please enter both DOE barcode and MAC address: entered {self.current_barcode}, {self.current_mac}",
+    #             severity="warning",
+    #         )
+    #         return
+    #
+    #     # Check if asset already exists
+    #     existing_asset = asset_ops.find_asset_by_barcode_and_mac(
+    #         self.repository, self.current_barcode, self.current_mac
+    #     )
+    #
+    #     if existing_asset:
+    #         self.notify(
+    #             f"Asset already exists: {existing_asset.asset_tag}, {existing_asset.mac_address}",
+    #             title="Asset Exists",
+    #             severity="warning",
+    #         )
+    #     else:
+    #         # Create new asset
+    #         asset = asset_ops.create_asset(
+    #             building=
+    #             asset_tag=self.current_barcode,
+    #             mac_address=self.current_mac,
+    #         )
+    #         self.notify(f"Asset added: {asset.asset_tag}")
+    #         self.refresh_table()
+    #
+    #     # Clear inputs for next scan
+    #     self.query_one("#barcode-input", Input).value = ""
+    #     self.query_one("#mac-input", Input).value = ""
+    #     self.current_barcode = ""
+    #     self.current_mac = ""
+    #     self.query_one("#barcode-input").focus()
 
     def update_asset(self) -> None:
         """Update an asset."""
@@ -162,7 +173,7 @@ class ScanScreen(ModalScreen):
         )
 
         if updated_asset:
-            self.notify(f"Asset updated: {updated_asset.barcode}")
+            self.notify(f"Asset updated: {updated_asset.asset_tag}")
             self.refresh_table()
         else:
             self.notify("Asset not found", severity="error")
@@ -209,7 +220,7 @@ class ScanScreen(ModalScreen):
             for asset in assets:
                 writer.writerow(
                     [
-                        asset.barcode,
+                        asset.asset_tag,
                         asset.mac_address,
                         asset.status.value,
                         asset.created_timestamp.strftime("%Y-%m-%d %H:%M:%S"),
@@ -217,4 +228,4 @@ class ScanScreen(ModalScreen):
                     ]
                 )
 
-        self.notify(f"Assets exported to {filename}", severity="info")
+        self.notify(f"Assets exported to {filename}", severity="information")

@@ -19,7 +19,7 @@ class CSVService:
     """
 
     def read_csv(self, file_path: Path) -> list[dict[str, str | None]]:
-        self._validate_csv(str(file_path))
+        self._validate_csv(file_path)
 
         rows: list[dict[str, str | None]] = []
 
@@ -51,11 +51,14 @@ class CSVService:
         return Path(file)
 
     @staticmethod
-    def _validate_csv(file_path: str) -> bool:
-        path = Path(file_path)
+    def _validate_csv(file_path: Path) -> bool:
+        path = file_path
 
-        if not path.exists() or not path.is_file():
-            print("path or file must exist")
+        if not path.exists():
+            print("path must exist")
+
+        if not path.is_file():
+            print("file must exist")
 
         if path.suffix.lower() != ".csv":
             print("must be csv format")

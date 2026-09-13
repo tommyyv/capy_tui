@@ -10,6 +10,10 @@ from typing import Optional
 
 
 # TODO: add strip method that removes the first 5 characters when scanning the DOE.
+# ✓ Asset invariants
+# ✓ Validation
+# ✓ Normalization that belongs to the domain
+# ✓ Status transitions
 class AssetStatus(Enum):
     ACTIVE = "Active"
     PENDING_EXCESS = "Pending Excess"
@@ -71,26 +75,6 @@ class Asset:
     @staticmethod
     def _normalize_mac_address(mac: str) -> str:
         return mac.replace(":", "").replace("-", "").replace(".", "").lower()
-
-    @classmethod
-    def create_new(
-        cls,
-        asset_tag: str,
-        mac_address: Optional[str],
-        building: Optional[str],
-        room: Optional[str],
-    ) -> "Asset":
-        """Create a new asset with current timestamps."""
-        now = datetime.now()
-        return cls(
-            building=building,
-            room=room,
-            asset_tag=asset_tag,
-            mac_address=mac_address,
-            status=AssetStatus.IN_STOCK,
-            created_timestamp=now,
-            updated_timestamp=now,
-        )
 
     def update_status(self, new_status: AssetStatus) -> "Asset":
         """Return a new asset with an updated status."""

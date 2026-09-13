@@ -1,0 +1,62 @@
+# standard
+
+# framework
+from textual.app import App
+
+# user-defined
+from application.asset_workflow import AssetWorkflow
+from application.csv_service import CSVService
+from infrastructure.database import Database
+from infrastructure.sqlite_repository import SQLiteRepository
+from ui.excess_screen import ExcessScreen
+from ui.home import HomeScreen
+from ui.import_screen import ImportScreen
+from ui.scan_screen import ScanScreen
+
+
+class CapyTUI(App):
+    """Main application class."""
+
+    TITLE = "CAPY TUI"
+    CSS_PATH = "styles/main.tcss"
+
+    def __init__(self):
+        super().__init__()
+
+        # infrastructure
+        self.db = Database("assets.db")
+        self.repository = SQLiteRepository(self.db)
+        self.db.initialize_schema()
+
+        # Application services & workflows
+        self.asset_workflow = AssetWorkflow(self.repository)
+        self.csv_service = CSVService()
+
+        # UI
+        self.home_screen = HomeScreen()
+        self.scan_screen = ScanScreen(asset_workflow=self.asset_workflow)
+        self.excess_screen = ExcessScreen(repository=self.repository)
+        self.import_screen = ImportScreen(
+            asset_workflow=self.asset_workflow, csv_service=self.csv_service
+        )
+
+    def on_mount(self) -> None:
+        """Called when app is mounted."""
+        self.push_screen(self.home_screen)
+
+    def show_scan(self) -> None:
+        self.switch_screen(self.scan_screen)
+
+    def show_inventory(self) -> None:
+        pass
+
+    def show_excess(self) -> None:
+        pass
+
+    def show_import(self) -> None:
+        self.switch_screen(self.import_screen)
+
+
+if __name__ == "__main__":
+    app = CapyTUI()
+    app.run()

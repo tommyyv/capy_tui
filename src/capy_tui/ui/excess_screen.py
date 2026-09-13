@@ -280,3 +280,29 @@ class ExcessScreen(Screen):
                 )
 
         self.notify(f"Assets exported to {filename}", severity="information")
+
+    def on_import_csv():
+        pass
+
+    def preview_csv(self) -> None:
+        try:
+            rows = self.csv_service.read_csv(Path(self.selected_file_path))
+
+            table = self.query_one("#preview-table", DataTable)
+
+            table.clear()
+
+            if not rows:
+                return
+
+            headers = list(rows[0].keys())
+            table.add_columns(*headers)
+
+            for row in rows[:50]:
+                table.add_row(*(row.get(header, "") for header in headers))
+
+        except UnicodeDecodeError:
+            self.notify(
+                "Invalid file encoding. Please ensure the file is UTF-8 encoded.",
+                severity="error",
+            )

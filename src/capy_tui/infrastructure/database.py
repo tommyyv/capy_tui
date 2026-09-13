@@ -12,8 +12,8 @@ from .schema import SCHEMA_V1
 class Database:
     """Manages SQLite database connection and schema."""
 
-    def __init__(self, db_path: str):
-        self.db_path = Path(db_path)
+    def __init__(self, db_path: Path):
+        self.db_path = db_path
         self._connection = None
 
     def initialize_schema(self):

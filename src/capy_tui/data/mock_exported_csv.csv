@@ -1,0 +1,11 @@
+building,room,asset_tag,mac_address
+Building E,502,ASSET-010,112233445566
+Building E,501,ASSET-009,
+Building D,402,ASSET-008,aabbccddeeff
+Building D,401,ASSET-007,001122334455
+Building C,302,ASSET-006,aabbccddeeff
+Building C,301,ASSET-005,001122334455
+Building B,202,ASSET-004,aabbccddeeff
+Building B,201,ASSET-003,001122334455
+Building A,102,ASSET-002,aabbccddeeff
+Building A,101,ASSET-001,001122334455
