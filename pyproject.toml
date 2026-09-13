@@ -1,11 +1,20 @@
 [project]
 name = "capy-tui"
 version = "0.0.1"
-requires-python = ">=3.14.0"
-dependencies = "8.2.7"
-authors = {name = "capy"}
+authors = [
+  { name = "capy" }
+]
 readme = "README.md"
 license = "MIT"
+requires-python = ">=3.14.0"
+dependencies = [
+  "textual==8.2.7"
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.1.0"
+]
 
 [project.urls]
 Repository = "https://github.com/tommyyv/capy_tui.git"
