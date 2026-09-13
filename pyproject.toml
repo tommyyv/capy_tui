@@ -11,7 +11,7 @@ dependencies = [
   "textual==8.2.7"
 ]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
   "pytest>=9.1.0"
 ]
@@ -19,3 +19,4 @@ dev = [
 [project.urls]
 Repository = "https://github.com/tommyyv/capy_tui.git"
 Changelog = "https://github.com/tommyyv/capy_tui/blob/main/CHANGELOG.md"
+Issues = "https://github.com/tommyyv/capy_tui/issues"
