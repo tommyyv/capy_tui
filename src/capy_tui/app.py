@@ -4,14 +4,14 @@
 from textual.app import App
 
 # user-defined
-from application.asset_workflow import AssetWorkflow
-from application.csv_service import CSVService
-from infrastructure.database import Database
-from infrastructure.sqlite_repository import SQLiteRepository
-from ui.excess_screen import ExcessScreen
-from ui.home import HomeScreen
-from ui.import_screen import ImportScreen
-from ui.scan_screen import ScanScreen
+from capy_tui.application.asset_workflow import AssetWorkflow
+from capy_tui.application.csv_service import CSVService
+from capy_tui.infrastructure.database import Database
+from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
+from capy_tui.ui.excess_screen import ExcessScreen
+from capy_tui.ui.home import HomeScreen
+from capy_tui.ui.import_screen import ImportScreen
+from capy_tui.ui.scan_screen import ScanScreen
 
 
 class CapyTUI(App):
@@ -55,8 +55,3 @@ class CapyTUI(App):
 
     def show_import(self) -> None:
         self.switch_screen(self.import_screen)
-
-
-if __name__ == "__main__":
-    app = CapyTUI()
-    app.run()
