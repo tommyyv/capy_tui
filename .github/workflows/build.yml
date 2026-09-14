@@ -14,28 +14,28 @@ on:
       - "release/**"
 
 jobs:
-  # test:
-  #   name: Test
-  #   runs-on: ubuntu-latest
-  #
-  #   steps:
-  #     - name: [TEST] Checkout code
-  #       uses: actions/checkout@v4
-  #
-  #     - name: [TEST] Set up Python
-  #       uses: actions/setup-python@v6.3.0
-  #       with:
-  #         python-version: "3.14.5"
-  #         cache: "pip"
-  #
-  #     - name: [TEST] Install & build dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         python -m pip install --editable ".[dev]"
-  #
-  #     - name: [TEST] Run tests
-  #       run: |
-  #         python -m pytest
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: [TEST] Checkout code
+        uses: actions/checkout@v4
+
+      - name: [TEST] Set up Python
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: "3.14.5"
+          cache: "pip"
+
+      - name: [TEST] Install & build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ".[dev]"
+
+      - name: [TEST] Run tests
+        run: |
+          python -m pytest
 
   build:
     name: Build on ${{ matrix.os }}
@@ -45,19 +45,19 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: capy_tui-linux-amd64
-            release_name: capy_tui-linux-amd64
-            executable_path: capy_tui-linux-amd64
+            artifact_name: capy-tui-linux-amd64
+            release_name: capy-tui-linux-amd64
+            executable_path: capy-tui-linux-amd64
 
           - os: windows-latest
-            artifact_name: capy_tui-windows-amd64
-            release_name: capy_tui-windows-amd64.exe
-            executable_path: capy_tui-windows-amd64.exe
+            artifact_name: capy-tui-windows-amd64
+            release_name: capy-tui-windows-amd64.exe
+            executable_path: capy-tui-windows-amd64.exe
 
           - os: macos-latest
-            artifact_name: capy_tui-macos-arm64
-            release_name: capy_tui-macos-arm64
-            executable_path: capy_tui-macos-arm64
+            artifact_name: capy-tui-macos-arm64
+            release_name: capy-tui-macos-arm64
+            executable_path: capy-tui-macos-arm64
 
     steps:
       - name: Checkout code
@@ -78,11 +78,11 @@ jobs:
       - name: Build executable
         shell: bash
         run: |
-          pyinstaller \
+          python -m pyinstaller \
           --clean \
           --onefile \
-          --name capy_tui \
-          --add-data "src/styles:styles" src/app.py
+          --name capy-tui \
+          --add-data "src/capy_tui/styles:styles" src/capy_tui/app.py
 
       - name: Rename executable
         shell: bash
@@ -90,12 +90,12 @@ jobs:
           echo "Listing dist folder before rename:"
           ls -la dist/
 
-          if [ -f "dist/capy_tui.exe" ]; then
-            mv dist/capy_tui.exe "${{ matrix.release_name }}"
-            echo "Renamed capy_tui.exe to ${{ matrix.release_name }}"
+          if [ -f "dist/capy-tui.exe" ]; then
+            mv dist/capy-tui.exe "${{ matrix.release_name }}"
+            echo "Renamed capy-tui.exe to ${{ matrix.release_name }}"
           elif [ -f "dist/capy_tui" ]; then
-            mv dist/capy_tui "${{ matrix.release_name }}"
-            echo "Renamed capy_tui to ${{ matrix.release_name }}"
+            mv dist/capy-tui "${{ matrix.release_name }}"
+            echo "Renamed capy-tui to ${{ matrix.release_name }}"
           else
             echo "ERROR: No executable found in dist!"
             exit 1
@@ -124,8 +124,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            capy_tui-linux-amd64/capy_tui-linux-amd64
-            capy_tui-windows-amd64/capy_tui-windows-amd64.exe
-            capy_tui-macos-arm64/capy_tui-macos-arm64
+            capy-tui-linux-amd64/capy-tui-linux-amd64
+            capy-tui-windows-amd64/capy-tui-windows-amd64.exe
+            capy-tui-macos-arm64/capy-tui-macos-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
