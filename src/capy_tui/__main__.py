@@ -2,7 +2,8 @@ from capy_tui.app import CapyTUI
 
 
 def main() -> None:
-    CapyTUI.run()
+    app = CapyTUI()
+    app.run()
 
 
 if __name__ == "__main__":
