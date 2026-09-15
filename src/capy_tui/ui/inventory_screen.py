@@ -8,7 +8,7 @@ from textual.containers import Container, Horizontal, Vertical
 from textual import on
 
 # user-defined
-from domain import asset_ops
+from capy_tui.domain import asset_ops
 
 
 class InventoryScreen(ModalScreen):

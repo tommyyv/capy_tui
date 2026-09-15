@@ -11,8 +11,8 @@ from textual.containers import Container, Vertical, Horizontal
 from textual import on
 
 # user-defined
-from domain.asset import Asset, AssetStatus
-from domain import asset_ops
+from capy_tui.domain.asset import Asset, AssetStatus
+from capy_tui.domain import asset_ops
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"

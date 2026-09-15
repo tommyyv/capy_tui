@@ -1,15 +1,18 @@
+# standard
 from pathlib import Path
 
+# framework
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, DataTable, Footer, Header, Input, Label
 
-from domain.asset import AssetStatus
-from application.asset_workflow import AssetWorkflow
-from application.csv_service import CSVService
-from infrastructure.sqlite_repository import SQLiteRepository
+# user-defined
+from capy_tui.domain.asset import AssetStatus
+from capy_tui.application.asset_workflow import AssetWorkflow
+from capy_tui.application.csv_service import CSVService
+from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
 
 
 # NOTE: so that means my Home/Main class must compose the repo, workflow, and service and pass those into each screen

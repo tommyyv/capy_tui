@@ -10,9 +10,9 @@ from textual.containers import Container, Vertical, Horizontal
 from textual import on
 
 # user-defined
-from domain.asset import AssetStatus
-from domain import asset_ops
-from application.asset_workflow import AssetWorkflow
+from capy_tui.domain.asset import AssetStatus
+from capy_tui.domain import asset_ops
+from capy_tui.application.asset_workflow import AssetWorkflow
 
 
 class ScanScreen(ModalScreen):

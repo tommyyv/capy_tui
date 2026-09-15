@@ -13,8 +13,8 @@ from textual.widgets import (
     Label,
 )
 
-from application.asset_workflow import AssetWorkflow
-from application.csv_service import CSVService
+from capy_tui.application.asset_workflow import AssetWorkflow
+from capy_tui.application.csv_service import CSVService
 
 
 class ImportScreen(Screen):
