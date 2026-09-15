@@ -5,10 +5,10 @@ import unittest
 # framework
 
 # user-defined
-from application.asset_workflow import AssetWorkflow
-from application.csv_service import CSVService
-from infrastructure.sqlite_repository import SQLiteRepository
-from infrastructure.database import Database
+from capy_tui.application.asset_workflow import AssetWorkflow
+from capy_tui.application.csv_service import CSVService
+from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
+from capy_tui.infrastructure.database import Database
 
 
 class TestAssetImportIntegration(unittest.TestCase):

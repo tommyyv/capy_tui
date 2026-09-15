@@ -4,7 +4,7 @@ from pathlib import Path
 # framework
 
 # user-defined
-from domain.asset import Asset
+from capy_tui.domain.asset import Asset
 
 
 class CSVService:

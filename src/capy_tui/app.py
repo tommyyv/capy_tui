@@ -1,4 +1,5 @@
 # standard
+from pathlib import Path
 
 # framework
 from textual.app import App
@@ -20,11 +21,11 @@ class CapyTUI(App):
     TITLE = "CAPY TUI"
     CSS_PATH = "styles/main.tcss"
 
-    def __init__(self):
+    def __init__(self, db_path: Path):
         super().__init__()
 
         # infrastructure
-        self.db = Database("assets.db")
+        self.db = Database(db_path=db_path)
         self.repository = SQLiteRepository(self.db)
         self.db.initialize_schema()
 

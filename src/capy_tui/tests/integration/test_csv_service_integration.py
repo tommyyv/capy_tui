@@ -4,11 +4,11 @@ from pathlib import Path
 # framework
 
 # user-defined
-from domain.asset import Asset
-from infrastructure.database import Database
-from infrastructure.sqlite_repository import SQLiteRepository
-from application.asset_workflow import AssetWorkflow
-from application.csv_service import CSVService
+from capy_tui.domain.asset import Asset
+from capy_tui.infrastructure.database import Database
+from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
+from capy_tui.application.asset_workflow import AssetWorkflow
+from capy_tui.application.csv_service import CSVService
 
 # ✓ Read CSV
 # ✓ Validate CSV structure

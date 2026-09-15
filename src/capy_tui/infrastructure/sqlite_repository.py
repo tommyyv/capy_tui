@@ -6,7 +6,7 @@ from datetime import datetime
 
 # user-defined
 from .database import Database
-from domain.asset import Asset, AssetStatus
+from capy_tui.domain.asset import Asset, AssetStatus
 
 
 class SQLiteRepository:
