@@ -1,6 +1,7 @@
 # standard
 import csv
 from pathlib import Path
+
 # framework
 
 # user-defined
@@ -50,6 +51,7 @@ class CSVService:
 
         return Path(file)
 
+    # TODO: move these static methods to a utils directory and call it as a module
     @staticmethod
     def _validate_csv(file_path: Path) -> bool:
         path = file_path

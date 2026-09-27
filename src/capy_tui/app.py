@@ -9,10 +9,11 @@ from capy_tui.application.asset_workflow import AssetWorkflow
 from capy_tui.application.csv_service import CSVService
 from capy_tui.infrastructure.database import Database
 from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
-from capy_tui.ui.excess_screen import ExcessScreen
+
+# from capy_tui.ui.excess_screen import ExcessScreen
 from capy_tui.ui.home import HomeScreen
 from capy_tui.ui.import_screen import ImportScreen
-from capy_tui.ui.scan_screen import ScanScreen
+# from capy_tui.ui.scan_screen import ScanScreen
 
 
 class CapyTUI(App):
@@ -35,8 +36,8 @@ class CapyTUI(App):
 
         # UI
         self.home_screen = HomeScreen()
-        self.scan_screen = ScanScreen(asset_workflow=self.asset_workflow)
-        self.excess_screen = ExcessScreen(repository=self.repository)
+        # self.scan_screen = ScanScreen(asset_workflow=self.asset_workflow)
+        # self.excess_screen = ExcessScreen(repository=self.repository)
         self.import_screen = ImportScreen(
             asset_workflow=self.asset_workflow, csv_service=self.csv_service
         )
@@ -46,7 +47,8 @@ class CapyTUI(App):
         self.push_screen(self.home_screen)
 
     def show_scan(self) -> None:
-        self.switch_screen(self.scan_screen)
+        pass
+        # self.switch_screen(self.scan_screen)
 
     def show_inventory(self) -> None:
         pass

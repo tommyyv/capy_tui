@@ -11,6 +11,7 @@ from textual.widgets import (
     Header,
     Input,
     Label,
+    DirectoryTree,
 )
 
 from capy_tui.application.asset_workflow import AssetWorkflow
@@ -63,11 +64,11 @@ class ImportScreen(Screen):
                     id="csv-path",
                 )
 
-                yield Button(
-                    "Preview",
-                    id="preview-btn",
-                    variant="default",
-                )
+                # yield Button(
+                #     "Preview",
+                #     id="preview-btn",
+                #     variant="default",
+                # )
 
                 yield Button(
                     "Import",
@@ -75,60 +76,70 @@ class ImportScreen(Screen):
                     variant="success",
                 )
 
-            yield DataTable(id="preview-table")
+            # yield DataTable(id="preview-table")
 
+        # yield DirectoryTree("./data")
+        yield DirectoryTree("./mock/")
         yield Footer()
 
     def on_mount(self) -> None:
-        table = self.query_one("#preview-table", DataTable)
+        pass
+        # table = self.query_one("#preview-table", DataTable)
 
-        table.cursor_type = "row"
+        # table.cursor_type = "row"
 
-    @on(Button.Pressed, "#preview-btn")
-    def preview_csv(self) -> None:
-        """Read and display CSV data without importing it."""
+    @on(DirectoryTree.FileSelected)
+    def on_file_selected(self, event: DirectoryTree.FileSelected) -> None:
+        path = event.path
 
-        path_input = self.query_one("#csv-path", Input)
+        # self.selected_file = path
+        self.query_one("#csv-path", Input).value = str(path)
 
-        if not path_input.value.strip():
-            self.notify(
-                "Please select a CSV file.",
-                severity="warning",
-            )
-            return
+        # if not self.selected_file.value.strip():
+        #     self.notify(
+        #         "Please select a CSV file.",
+        #         severity="warning",
+        #     )
+        # return
 
-        path = Path(path_input.value.strip())
-
-        try:
-            rows = self.csv_service.read_csv(path)
-
-            self.preview_rows = rows
-            self.selected_file = path
-
-            self._render_preview(rows)
-
-            self.notify(
-                f"Previewing {len(rows)} rows.",
-                severity="information",
-            )
-
-        except (FileNotFoundError, ValueError) as exc:
-            self.notify(
-                str(exc),
-                severity="error",
-            )
-
-            # except UnicodeDecodeError:
-            self.notify(
-                "CSV must be UTF-8 encoded.",
-                severity="error",
-            )
+    # @on(Button.Pressed, "#preview-btn")
+    # def preview_csv(self) -> None:
+    #     """Read and display CSV data without importing it."""
+    #
+    #     path_input = self.query_one("#csv-path", Input).value
+    #     try:
+    #         rows = self.csv_service.read_csv(Path(path_input))
+    #
+    #         self.preview_rows = rows
+    #         # self.selected_file = path_input
+    #
+    #         self._render_preview(rows)
+    #
+    #         self.notify(
+    #             f"Previewing {len(rows)} rows.",
+    #             severity="information",
+    #         )
+    #
+    #     except (FileNotFoundError, ValueError) as exc:
+    #         self.notify(
+    #             str(exc),
+    #             severity="error",
+    #         )
+    #
+    #         # except UnicodeDecodeError:
+    #         self.notify(
+    #             "CSV must be UTF-8 encoded.",
+    #             severity="error",
+    #         )
 
     @on(Button.Pressed, "#import-btn")
     def import_csv(self) -> None:
         """Import CSV data through the asset workflow."""
 
-        if self.selected_file is None:
+        file = Path(self.query_one("#csv-path", Input).value)
+        self.notify(f"selected file: {file}")
+
+        if file is None:
             self.notify(
                 "Preview a CSV file before importing.",
                 severity="warning",
@@ -136,7 +147,7 @@ class ImportScreen(Screen):
             return
 
         try:
-            rows = self.csv_service.read_csv(self.selected_file)
+            rows = self.csv_service.read_csv(file)
 
             assets = self.asset_workflow.import_assets(rows)
 
@@ -145,13 +156,13 @@ class ImportScreen(Screen):
                 severity="information",
             )
 
-            self.preview_rows.clear()
+            # self.preview_rows.clear()
 
-            table = self.query_one(
-                "#preview-table",
-                DataTable,
-            )
-            table.clear()
+            # table = self.query_one(
+            #     "#preview-table",
+            #     DataTable,
+            # )
+            # table.clear()
 
         except (FileNotFoundError, ValueError) as exc:
             self.notify(
@@ -165,36 +176,36 @@ class ImportScreen(Screen):
                 severity="error",
             )
 
-    def _render_preview(
-        self,
-        rows: list[dict[str, str | None]],
-    ) -> None:
-        """Render normalized CSV data in the UI."""
-
-        table = self.query_one(
-            "#preview-table",
-            DataTable,
-        )
-
-        table.clear()
-
-        if not rows:
-            return
-
-        # TODO: make dynamic
-        headers = [
-            "building",
-            "room",
-            "asset_tag",
-            "mac_address",
-        ]
-
-        table.add_columns(*headers)
-
-        for row in rows[:50]:
-            table.add_row(
-                row["building"] or "",
-                row["room"] or "",
-                row["asset_tag"] or "",
-                row["mac_address"] or "",
-            )
+    # def _render_preview(
+    #     self,
+    #     rows: list[dict[str, str | None]],
+    # ) -> None:
+    #     """Render normalized CSV data in the UI."""
+    #
+    #     table = self.query_one(
+    #         "#preview-table",
+    #         DataTable,
+    #     )
+    #
+    #     table.clear()
+    #
+    #     if not rows:
+    #         return
+    #
+    #     # TODO: make dynamic
+    #     headers = [
+    #         "building",
+    #         "room",
+    #         "asset_tag",
+    #         "mac_address",
+    #     ]
+    #
+    #     table.add_columns(*headers)
+    #
+    #     for row in rows[:50]:
+    #         table.add_row(
+    #             row["building"] or "",
+    #             row["room"] or "",
+    #             row["asset_tag"] or "",
+    #             row["mac_address"] or "",
+    #         )
