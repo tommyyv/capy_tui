@@ -1,21 +1,22 @@
+# environments
 .env
 env
-
 .venv
 venv
-src/test.py
-src/data/
-src.bak/
 
 # database
 *.db
 *.sqlite
 *.sqlite3
 
+# cache
 __pycache__
 
+# dev only
+src/test.py
+src/data/
+src.bak/
+docs/dev/
+mock/
 DEVELOPER.md
 TODO.md
-PROMPT.md
-
-mock/
