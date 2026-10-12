@@ -10,7 +10,7 @@ from textual.widgets import Header, Button, Static, Footer
 # user-defined
 from capy_tui.application.asset_workflow import AssetWorkflow
 from capy_tui.application.csv_service import CSVService
-from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
+from capy_tui.infrastructure.database.sqlite_repository import SQLiteRepository
 from capy_tui.ui.import_screen import ImportScreen
 from capy_tui.ui.scan_screen import ScanScreen
 from capy_tui.ui.excess_screen import ExcessScreen
