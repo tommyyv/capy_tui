@@ -1,5 +1,13 @@
+@Author: capy
+
 # Introduction
 An inventory management terminal user-interface (TUI).
+
+Features:
+- Scan
+- Excess
+- Import
+- Reports -> Export
 
 ## Design & Architecture
 
@@ -12,7 +20,6 @@ require extensive support.
 - Lightweight/Minimal
 - Portable
 - Maintainable/Scalable
-
 
 Please refer to the [Software Design & Architecture](./docs/SAD.md) for more information.
 
@@ -76,5 +83,3 @@ Please refer to [LICENSE](./LICENSE) for more details.
 ## Contribution & Support
 
 Please follow the [CONTRIBUTING](./CONTRIBUTING.md) guide. Any support is much appreciated!
-
-@Author: capy
