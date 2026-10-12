@@ -6,7 +6,7 @@ from datetime import datetime
 
 # user-defined
 from capy_tui.domain.asset import Asset, AssetStatus
-from capy_tui.infrastructure.sqlite_repository import SQLiteRepository
+from capy_tui.infrastructure.database.sqlite_repository import SQLiteRepository
 
 
 class AssetWorkflow:
