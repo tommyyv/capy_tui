@@ -96,42 +96,21 @@ class HomeScreen(Screen):
             )
         )
 
-    # TODO: use a strategy pattern to select between the screen depending on the event.id
-    """
-    this is what it should be like:
-
-    type CallableFn = Callable[str, None]
-
-    screener: dict[str, CallableFn] = {}
-    screen_select = {
-        "scan-btn": self.action_open_import
-    }
-
-    then the method would be: if the event id is X, then use the dictionary to choose the associated method
-
-    should i use a switch or a control branch to check the event.id
-    if event.button.id:
-        screen[event.button.id]
-
-    """
-
-    # TODO: add button id
-    # NOTE: or i need to create individual on_X_button_pressed per the docs
     @on(Button.Pressed, "#scan-btn")
     def on_scan_button_pressed(self, event: Button.Pressed) -> None:
         assert event.button.id is not None
-        self.app.push_screen(ScanScreen())
-        # if event.button.id == "scan-btn":
-        #     self.action_open_scan()
-        #
-        # elif event.button.id == "inventory-btn":
-        #     # NOTE: i dont think i need this
-        #     pass
-        #
-        # elif event.button.id == "excess-btn":
-        #     self.action_open_excess()
-        #
-        # # TODO: push the import modal screen
-        # elif event.button.id == "import-btn":
-        #     # TODO: rename to action_open_import_modal()
-        #     self.action_open_import()
+        self.action_open_scan()
+
+    @on(Button.Pressed, "#excess-btn")
+    def on_excess_button_pressed(self, event: Button.Pressed) -> None:
+        assert event.button.id is not None
+        self.action_open_excess()
+
+    @on(Button.Pressed, "#import-btn")
+    def on_import_button_pressed(self, event: Button.Pressed) -> None:
+        assert event.button.id is not None
+        self.action_open_import()
+
+    def action_quit(self, event: Button.Pressed) -> None:
+        assert event.button.id is not None
+        self.app.quit()
