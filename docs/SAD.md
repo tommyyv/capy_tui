@@ -1,12 +1,11 @@
 # CAPY TUI | Design & Architecture
-Layered architecture following a lightweight Ports & Adapters architectural style and applying a lightweight DDD.
+Modular, layered, and lightweight port & adapters architecture and domain-driven design.
 
 ## Core Features
-* Asset inventory management
-* Excess asset management
-* Asset lookup and search
-* Exporting reports
-* Inventory history and auditing
+- Scan assets into a data table
+- Import assets
+- Export an asset list for generating reports
+- Asset lookup and search
 
 ---
 
@@ -22,12 +21,6 @@ The application is intended to be a desktop application with persistent local st
 ---
 
 ## Workflow
-Database talks to SQLite.
-Repository understands persistence for a domain.
-Workflow understands business use cases.
-Domain understands business rules.
-UI interacts with the user.
-
 ```text
 +----------------------+
 |      UI (Entry)      |
@@ -36,6 +29,7 @@ UI interacts with the user.
            v
 +----------------------+
 |    Application       |
+|     (Services)       |
 +----------+-----------+
            |
            v
@@ -44,12 +38,12 @@ UI interacts with the user.
 +----------+-----------+
            ^
            |
-  Repository Interface
+  Repository Interface ---------> | SQLite, Postgres, etc. (Infrastructure) |
 (Persistence Abstraction)
            ^
            |
 +----------------------+
-|  SQLite Repository   |
+|  Database Interface  |
 |   (Infrastructure)   |
 +----------------------+
 ```
