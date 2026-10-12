@@ -90,3 +90,57 @@ Footer {
     color: $text;
     height: 3;
 }
+
+/* Import Modal Styles */
+ImportModalScreen {
+    align: center middle;
+    padding: 1;
+}
+
+#instruction-label {
+    text-style: bold;
+    margin-bottom: 1;
+    width: 100%;
+    content-align: center middle;
+}
+
+#main-container {
+    width: 100%;
+    height: 1fr;
+    margin: 1;
+}
+
+/* Left Panel: File Tree */
+#file-tree {
+    width: 1fr;
+    height: 100%;
+    border: solid $primary;
+    margin-right: 1;
+}
+
+/* Right Panel: Controls and Preview */
+#right-panel {
+    width: 2fr;
+    height: 100%;
+}
+
+#file-path-input {
+    margin-bottom: 1;
+}
+
+#button-row {
+    height: auto;
+    margin: 1 0;
+    align: center middle;
+}
+
+#button-row Button {
+    margin: 0 1;
+    min-width: 16;
+}
+
+#preview-table {
+    height: 1fr;
+    border: solid $secondary;
+    margin-top: 1;
+}
