@@ -11,8 +11,9 @@ from textual.containers import Container, Vertical, Horizontal
 from textual import on
 
 # user-defined
-# from capy_tui.domain.asset import Asset, AssetStatus
-# from capy_tui.domain import asset_ops
+from capy_tui.domain.asset import Asset, AssetStatus
+from capy_tui.application.asset_workflow import AssetWorkflow
+from capy_tui.application.csv_service import CSVService
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -28,9 +29,10 @@ class ExcessScreen(Screen):
         ("ctrl+d", "delete_row_selected", "Delete"),
     ]
 
-    def __init__(self, repository):
+    def __init__(self, asset_workflow: AssetWorkflow, csv_service: CSVService):
         super().__init__()
-        self.repository = repository
+        self.asset_workflow = asset_workflow
+        self.csv_service = csv_service
         self.current_barcode = ""
         self.current_mac = ""
 
@@ -80,7 +82,7 @@ class ExcessScreen(Screen):
         table = self.query_one(DataTable)
         table.clear()
 
-        assets = asset_ops.find_all_excess_assets(self.repository)
+        assets = self.asset_workflow.find_all_excess_assets()
         for asset in assets:
             table.add_row(
                 asset.asset_tag,
@@ -134,7 +136,7 @@ class ExcessScreen(Screen):
             return
 
         # Find the asset in the main assets table
-        asset = asset_ops.find_asset_by_barcode_and_mac(
+        asset = self.asset_workflow.find_asset_by_barcode_and_mac(
             self.repository, self.current_barcode, self.current_mac
         )
 
@@ -216,7 +218,7 @@ class ExcessScreen(Screen):
             )
             return
 
-        success = self.repository.delete_from_excess_by_barcode_and_mac(
+        success = self.asset_workflow.delete_asset(
             self.current_barcode, self.current_mac
         )
 
@@ -244,7 +246,7 @@ class ExcessScreen(Screen):
                 doe = table.get_row(row_key)[0]
                 mac = table.get_row(row_key)[1]
 
-                self.repository.delete_from_excess_by_barcode_and_mac(doe, mac)
+                self.asset_workflow.delete_asset(doe, mac)
 
                 table.remove_row(row_key)
 
@@ -252,7 +254,7 @@ class ExcessScreen(Screen):
 
     def action_export_csv(self) -> None:
         """Export current table to CSV."""
-        assets = asset_ops.find_all_assets(self.repository)
+        assets = self.asset_workflow.find_all_assets()
 
         filename = f"excessed_assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
         path = BASE_DIR / DATA_DIR / filename

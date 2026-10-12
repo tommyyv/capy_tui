@@ -11,7 +11,6 @@ from textual import on
 
 # user-defined
 from capy_tui.domain.asset import AssetStatus
-from capy_tui.domain import asset_ops
 from capy_tui.application.asset_workflow import AssetWorkflow
 
 
@@ -168,8 +167,8 @@ class ScanScreen(ModalScreen):
             return
 
         # For now, just update the status to Active
-        updated_asset = asset_ops.update_asset_status(
-            self.repository, self.current_barcode, self.current_mac, AssetStatus.ACTIVE
+        updated_asset = self.asset_workflow.update_asset_status(
+            self.current_barcode, self.current_mac, AssetStatus.ACTIVE
         )
 
         if updated_asset:
@@ -202,7 +201,7 @@ class ScanScreen(ModalScreen):
 
     def action_export_csv(self) -> None:
         """Export current table to CSV."""
-        assets = asset_ops.find_all_assets(self.repository)
+        assets = self.asset_workflow.find_all_assets()
 
         filename = f"assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
         with open(filename, "w", newline="") as csvfile:

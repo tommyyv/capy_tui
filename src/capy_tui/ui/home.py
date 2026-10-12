@@ -1,6 +1,7 @@
 # standard
 
 # framework
+from textual import on
 from textual.app import ComposeResult
 from textual.containers import Vertical, Center
 from textual.screen import Screen
@@ -86,6 +87,7 @@ class HomeScreen(Screen):
             )
         )
 
+    # TODO: push the import modal screen
     def action_open_import(self) -> None:
         self.app.push_screen(
             ImportScreen(
@@ -113,16 +115,23 @@ class HomeScreen(Screen):
 
     """
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "scan-btn":
-            self.action_open_scan()
-
-        elif event.button.id == "inventory-btn":
-            # NOTE: i dont think i need this
-            pass
-
-        elif event.button.id == "excess-btn":
-            self.action_open_excess()
-
-        elif event.button.id == "import-btn":
-            self.action_open_import()
+    # TODO: add button id
+    # NOTE: or i need to create individual on_X_button_pressed per the docs
+    @on(Button.Pressed, "#scan-btn")
+    def on_scan_button_pressed(self, event: Button.Pressed) -> None:
+        assert event.button.id is not None
+        self.app.push_screen(ScanScreen())
+        # if event.button.id == "scan-btn":
+        #     self.action_open_scan()
+        #
+        # elif event.button.id == "inventory-btn":
+        #     # NOTE: i dont think i need this
+        #     pass
+        #
+        # elif event.button.id == "excess-btn":
+        #     self.action_open_excess()
+        #
+        # # TODO: push the import modal screen
+        # elif event.button.id == "import-btn":
+        #     # TODO: rename to action_open_import_modal()
+        #     self.action_open_import()
