@@ -21,8 +21,8 @@ class CapyTUI(App):
 
         # infrastructure
         self.db = Database(db_path=db_path)
-        self.repository = SQLiteRepository(self.db)
         self.db.initialize_schema()
+        self.repository = SQLiteRepository(self.db)
 
         # application services
         self.asset_workflow = AssetWorkflow(self.repository)
